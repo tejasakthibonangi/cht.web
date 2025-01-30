@@ -1,4 +1,6 @@
-﻿using Cht.HMS.Web.API.DBConfiguration;
+﻿using Cht.HMS.Web.API.DataManager;
+using Cht.HMS.Web.API.DBConfiguration;
+using Cht.HMS.Web.API.Manager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -60,6 +62,8 @@ namespace Cht.HMS.Web.API
 
 
             services.AddMvc().AddXmlSerializerFormatters();
+
+            services.AddScoped<IRoleManager, RoleDataManager>();
 
             services.AddSwaggerGen(c =>
             {
