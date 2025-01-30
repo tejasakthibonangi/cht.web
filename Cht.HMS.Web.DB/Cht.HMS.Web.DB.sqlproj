@@ -62,9 +62,27 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Role.sql" />
+    <Build Include="Tables\PaymentType.sql" />
+    <Build Include="Tables\PatientType.sql" />
+    <Build Include="Tables\LabTests.sql" />
+    <Build Include="Tables\Medicines.sql" />
+    <Build Include="Tables\PatientRegistration.sql" />
+    <Build Include="Tables\Doctor.sql" />
+    <Build Include="Tables\DoctorAssignment.sql" />
+    <Build Include="Tables\ConsultationDetails.sql" />
+    <Build Include="Tables\Treatment.sql" />
+    <Build Include="Tables\MedicalConsultation.sql" />
+    <Build Include="Tables\Prescription.sql" />
+    <Build Include="Tables\Pharmacy.sql" />
+    <Build Include="Tables\Radiology.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Post-Deployment\Script.PostDeployment.sql" />
     <None Include="Post-Deployment\SeedRole.sql" />
+    <None Include="Post-Deployment\SeedPaymentType.sql" />
+    <None Include="Post-Deployment\SeedPatientType.sql" />
+    <None Include="Post-Deployment\SeedLabTests.sql" />
+    <None Include="Post-Deployment\SeedMedicines.sql" />
+    <None Include="Post-Deployment\SeedDoctor.sql" />
   </ItemGroup>
 </Project>
