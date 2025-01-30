@@ -1,0 +1,106 @@
+﻿/*
+Post-Deployment Script Template							
+--------------------------------------------------------------------------------------
+ This file contains SQL statements that will be appended to the build script.		
+ Use SQLCMD syntax to include a file in the post-deployment script.			
+ Example:      :r .\myfile.sql								
+ Use SQLCMD syntax to reference a variable in the post-deployment script.		
+ Example:      :setvar TableName MyTable							
+               SELECT * FROM [$(TableName)]					
+--------------------------------------------------------------------------------------
+*/
+MERGE INTO [dbo].[Medicines] AS target
+USING (
+    VALUES 
+        ('Paracetamol', 'Paracetamol', 'Tablet', '500 mg', 'ABC Pharmaceuticals', 'B12345', '2025-12-31', 0.50, 100),
+        ('Amoxicillin', 'Amoxicillin', 'Capsule', '250 mg', 'XYZ Pharmaceuticals', 'B12346', '2024-06-30', 1.20, 200),
+        ('Ibuprofen', 'Ibuprofen', 'Tablet', '400 mg', 'DEF Pharmaceuticals', 'B12347', '2025-01-15', 0.75, 150),
+        ('Metformin', 'Metformin', 'Tablet', '500 mg', 'GHI Pharmaceuticals', 'B12348', '2024-11-30', 0.80, 120),
+        ('Amlodipine', 'Amlodipine', 'Tablet', '5 mg', 'JKL Pharmaceuticals', 'B12349', '2025-03-31', 1.50, 80),
+        ('Lisinopril', 'Lisinopril', 'Tablet', '10 mg', 'MNO Pharmaceuticals', 'B12350', '2024-09-30', 1.00, 60),
+        ('Simvastatin', 'Simvastatin', 'Tablet', '20 mg', 'PQR Pharmaceuticals', 'B12351', '2025-05-31', 1.25, 90),
+        ('Omeprazole', 'Omeprazole', 'Capsule', '20 mg', 'STU Pharmaceuticals', 'B12352', '2024-08-31', 1.10, 110),
+        ('Levothyroxine', 'Levothyroxine', 'Tablet', '50 mcg', 'VWX Pharmaceuticals', 'B12353', '2025-02-28', 1.40, 70),
+        ('Atorvastatin', 'Atorvastatin', 'Tablet', '10 mg', 'YZA Pharmaceuticals', 'B12354', '2024-07-31', 1.30, 130),
+        ('Ciprofloxacin', 'Ciprofloxacin', 'Tablet', '500 mg', 'BCD Pharmaceuticals', 'B12355', '2025-04-30', 0.90, 140),
+        ('Furosemide', 'Furosemide', 'Tablet', '40 mg', 'EFG Pharmaceuticals', 'B12356', '2024-10-31', 0.60, 160),
+        ('Hydrochlorothiazide', 'Hydrochlorothiazide', 'Tablet', '25 mg', 'HIJ Pharmaceuticals', 'B12357', '2025-06-30', 0.55, 180),
+        ('Gabapentin', 'Gabapentin', 'Capsule', '300 mg', 'KLM Pharmaceuticals', 'B12358', '2024-12-31', 1.10, 75),
+        ('Sertraline', 'Sertraline', 'Tablet', '50 mg', 'NOP Pharmaceuticals', 'B12359', '2025-03-15', 1.20, 85),
+        ('Citalopram', 'Citalopram', 'Tablet', '20 mg', 'QRS Pharmaceuticals', 'B12360', '2024-11-15', 1.00, 95),
+        ('Fluoxetine', 'Fluoxetine', 'Capsule', '20 mg', 'TUV Pharmaceuticals', 'B12361', '2025-01-20', 1.15, 65),
+        ('Montelukast', 'Montelukast', 'Tablet', '10 mg', 'WXY Pharmaceuticals', 'B12362', '2024-09-15', 1.30, 55),
+        ('Albuterol', 'Albuterol', 'Inhaler', '90 mcg', 'ZAB Pharmaceuticals', 'B12363', '2025-05-01', 2.00, 50),
+        ('Prednisone', 'Prednisone', 'Tablet', '10 mg', 'CDE Pharmaceuticals', 'B12364', '2024-08-01', 0.80, 40),
+        ('Dexamethasone', 'Dexamethasone', 'Tablet', '4 mg', 'FGH Pharmaceuticals', 'B12365', '2025-07- 31', 0.90, 30),
+        ('Clopidogrel', 'Clopidogrel', 'Tablet', '75 mg', 'IJK Pharmaceuticals', 'B12366', '2024-12-15', 1.50, 20),
+        ('Warfarin', 'Warfarin', 'Tablet', '5 mg', 'LMN Pharmaceuticals', 'B12367', '2025-03-31', 1.80, 25),
+        ('Ranitidine', 'Ranitidine', 'Tablet', '150 mg', 'OPQ Pharmaceuticals', 'B12368', '2024-11-30', 0.70, 35),
+        ('Esomeprazole', 'Esomeprazole', 'Capsule', '20 mg', 'RST Pharmaceuticals', 'B12369', '2025-06-15', 1.40, 45),
+        ('Atenolol', 'Atenolol', 'Tablet', '50 mg', 'UVW Pharmaceuticals', 'B12370', '2024-10-01', 0.65, 55),
+        ('Candesartan', 'Candesartan', 'Tablet', '8 mg', 'XYZ Pharmaceuticals', 'B12371', '2025-01-15', 1.25, 65),
+        ('Duloxetine', 'Duloxetine', 'Capsule', '30 mg', 'ABC Pharmaceuticals', 'B12372', '2024-09-15', 1.10, 75),
+        ('Venlafaxine', 'Venlafaxine', 'Capsule', '75 mg', 'DEF Pharmaceuticals', 'B12373', '2025-02-28', 1.20, 85),
+        ('Bupropion', 'Bupropion', 'Tablet', '150 mg', 'GHI Pharmaceuticals', 'B12374', '2024-08-31', 1.30, 95),
+        ('Trazodone', 'Trazodone', 'Tablet', '50 mg', 'JKL Pharmaceuticals', 'B12375', '2025-03-01', 0.95, 105),
+        ('Loratadine', 'Loratadine', 'Tablet', '10 mg', 'MNO Pharmaceuticals', 'B12376', '2024-07-15', 0.85, 115),
+        ('Cetirizine', 'Cetirizine', 'Tablet', '10 mg', 'PQR Pharmaceuticals', 'B12377', '2025-04-30', 0.75, 125),
+        ('Diphenhydramine', 'Diphenhydramine', 'Capsule', '25 mg', 'STU Pharmaceuticals', 'B12378', '2024-06-30', 0.70, 135),
+        ('Fexofenadine', 'Fexofenadine', 'Tablet', '180 mg', 'VWX Pharmaceuticals', 'B12379', '2025-05-15', 1.00, 145),
+        ('Montelukast', 'Montelukast', 'Tablet', '10 mg', 'YZA Pharmaceuticals', 'B12380', '2024-12-31', 1.10, 155),
+        ('Fluticasone', 'Fluticasone', 'Inhaler', '125 mcg', 'BCD Pharmaceuticals', 'B12381', '2025-01-20', 2.50, 165),
+        ('Budesonide', 'Budesonide', 'Inhaler', '200 mcg', 'EFG Pharmaceuticals', 'B12382', '2024-11-15', 2.20, 175),
+        ('Insulin', 'Insulin', 'Injection', '100 units/ml', 'HIJ Pharmaceuticals', 'B12383', '2025-03-31', 3.00, 185),
+        ('Glimepiride', 'Glimepiride', 'Tablet', '2 mg', 'KLM Pharmaceuticals', 'B12384', '2024-10-01', 1.50, 195),
+        ('Sitagliptin', 'Sitagliptin', 'Tablet', '100 mg', 'NOP Pharmaceuticals', 'B12385', '2025-02-28', 1.80, 205),
+        ('Canagliflozin', 'Canagliflozin', 'Tablet', '100 mg', 'QRS Pharmaceuticals', 'B12386', '2024-09-15', 2.00, 215),
+        ('Dapagliflozin', 'Dapagliflozin', 'Tablet', '10 mg', 'TUV Pharmaceuticals', 'B12387', '2025-04-30', 1.90, 225),
+        ('Empagliflozin', 'Empagliflozin', 'Tablet', '10 mg', 'WXY Pharmaceuticals', 'B12388', '2024-12-31', 2.10, 235),
+        ('Metoprolol', 'Metoprolol', 'Tablet', '50 mg', 'ZAB Pharmaceuticals', 'B12389', '2025-01-15', 0.95, 245),
+        ('Propranolol', 'Propranolol', 'Tablet', '40 mg', 'CDE Pharmaceuticals', 'B12390', '2024-11-30', 1.05, 255),
+        ('Nifedipine', 'Nifedipine', 'Capsule', '30 mg', 'FGH Pharmaceuticals', 'B12391', '2025-03-31', 1.15, 265),
+        ('Verapamil', 'Verapamil', 'Tablet', '120 mg', 'IJK Pharmaceuticals', 'B12392', '2024-10-15', 1.25, 275),
+        ('Diltiazem', 'Diltiazem', 'Capsule', '120 mg', 'LMN Pharmaceuticals', 'B12393', '2025-02-28', 1.35, 285),
+        ('Nitroglycerin', 'Nitroglycerin', 'Sublingual Tablet', '0.4 mg', 'OPQ Pharmaceuticals', 'B12394', '2024-09-30', 0.80, 295),
+        ('Aspirin', 'Aspirin', 'Tablet', '81 mg', 'RST Pharmaceuticals', 'B12395', '2025-05-15', 0.50, 305),
+        ('Clonidine', 'Clonidine', 'Tablet', '0.1 mg', 'UVW Pharmaceuticals', 'B12396', '2024-12-31', 0.70, 315),
+        ('Rivastigmine', 'Rivastigmine', 'Capsule', '1.5 mg', 'XYZ Pharmaceuticals', 'B12397', '2025-01-20', 1.40, 325),
+        ('Donepezil', 'Donepezil', 'Tablet', '10 mg', 'ABC Pharmaceuticals', 'B12398', '2024-11-15', 1.60, 335),
+        ('Memantine', 'Memantine', 'Tablet', '10 mg', 'DEF Pharmaceuticals', 'B12399', '2025-03-31', 1.20, 345),
+        ('Quetiapine', 'Quetiapine', 'Tablet', '100 mg', 'GHI Pharmaceuticals', 'B12400', '2024-10-01', 1.50, 355),
+        ('Risperidone', 'Risperidone', 'Tablet', '2 mg', 'JKL Pharmaceuticals', 'B12401', '2025-02-28', 1.30, 365),
+        ('Aripiprazole', 'Aripiprazole', 'Tablet', '10 mg', 'MNO Pharmaceuticals', 'B12402', '2024-09-15', 1.40, 375),
+        ('Lithium', 'Lithium', 'Tablet', '300 mg', 'PQR Pharmaceuticals', 'B12403', '2025-04-30', 1.80, 385),
+        ('Buspirone', 'Buspirone', 'Tablet', '10 mg', 'STU Pharmaceuticals', 'B12404', '2024-12-31', 1.00, 395),
+        ('Gabapentin', 'Gabapentin', 'Capsule', '600 mg', 'VWX Pharmaceuticals', 'B12405', '2025-01-15', 1.10, 405),
+        ('Pregabalin', 'Pregabalin', 'Capsule', '75 mg', 'YZA Pharmaceuticals', 'B12406', '2024-11-30', 1.20, 415),
+        ('Topiramate', 'Topiramate', 'Tablet', '50 mg', 'BCD Pharmaceuticals', 'B12407', '2025-03-31', 1.30, 425),
+        ('Lamotrigine', 'Lamotrigine', 'Tablet', '100 mg', 'EFG Pharmaceuticals', 'B12408', '2024-10-15', 1.40, 435),
+        ('Levetiracetam', 'Levetiracetam', 'Tablet', '500 mg', 'HIJ Pharmaceuticals', 'B12409', '2025-02-28', 1.50, 445),
+        ('Carbamazepine', 'Carbamazepine', 'Tablet', '200 mg', 'KLM Pharmaceuticals', 'B12410', '2024-09-30', 1.60, 455),
+        ('Oxcarbazepine', 'Oxcarbazepine', 'Tablet', '300 mg', 'NOP Pharmaceuticals', 'B12411', '2025-05-15', 1.70, 465),
+        ('Valproate', 'Valproate', 'Tablet', '500 mg', 'QRS Pharmaceuticals', 'B12412', '2024-12-31', 1.80, 475),
+        ('Zonisamide', 'Zonisamide', 'Capsule', '100 mg', 'TUV Pharmaceuticals', 'B12413', '2025-01-20', 1.90, 485),
+        ('Ethosuximide', 'Ethosuximide', 'Capsule', '250 mg', 'WXY Pharmaceuticals', 'B12414', '2024-11-15', 2.00, 495),
+        ('Clobazam', 'Clobazam', 'Tablet', '10 mg', 'ZAB Pharmaceuticals', 'B12415', '2025-03-31', 1.10, 505),
+        ('Lacosamide', 'Lacosamide', 'Tablet', '100 mg', 'CDE Pharmaceuticals', 'B12416', '2024-10-01', 1.20, 515),
+        ('Perampanel', 'Perampanel', 'Tablet', '2 mg', 'FGH Pharmaceuticals', 'B12417', '2025-02-28', 1.30, 525),
+        ('Rufinamide', 'Rufinamide', 'Tablet', '400 mg', 'IJK Pharmaceuticals', 'B12418', '2024-09-15', 1.40, 535),
+        ('Eslicarbazepine', 'Eslicarbazepine', 'Tablet', '800 mg', 'LMN Pharmaceuticals', 'B12419', '2025-04-30', 1.50, 545),
+        ('Fosphenytoin', 'Fosphenytoin', 'Injection', '75 mg', 'OPQ Pharmaceuticals', 'B12420', '2024-12-31', 2.50, 555),
+        ('Phenytoin', 'Phenytoin', 'Capsule', '100 mg', 'RST Pharmaceuticals', 'B12421', '2025-01-15', 1.80, 565),
+        ('Sodium Valproate', 'Sodium Valproate', 'Tablet', '500 mg', 'UVW Pharmaceuticals', 'B12422', '2024-11-30', 1.90, 575),
+        ('Baclofen', 'Baclofen', 'Tablet', '10 mg', 'XYZ Pharmaceuticals', 'B12423', '2025-03-31', 0.80, 585),
+        ('Tizanidine', 'Tizanidine', 'Capsule', '4 mg', 'ABC Pharmaceuticals', 'B12424', '2024-10-01', 1.00, 595),
+        ('Cyclobenzaprine', 'Cyclobenzaprine', 'Tablet', '10 mg', 'DEF Pharmaceuticals', 'B12425', '2025-02-28', 0.90, 605),
+        ('Methocarbamol', 'Methocarbamol', 'Tablet', '500 mg', 'GHI Pharmaceuticals', 'B12426', '2024-09-15', 1.10, 615),
+        ('Carisoprodol', 'Carisoprodol', 'Tablet', '350 mg', 'JKL Pharmaceuticals', 'B12427', '2025-04-30', 1.20, 625),
+        ('Orphenadrine', 'Orphenadrine', 'Tablet', '100 mg', 'MNO Pharmaceuticals', 'B12428', '2024-12-31', 1.30, 635),
+        ('Dantrolene', 'Dantrolene', 'Capsule', '25 mg', 'PQR Pharmaceuticals', 'B12429', '2025-01-20', 1.40, 645),
+        ('Rizatriptan', 'Rizatriptan', 'Tablet', '10 mg', 'STU Pharmaceuticals', 'B12430', '2024-11-15', 1.50, 655),
+        ('Sumatriptan', 'Sumatriptan', 'Injection', '6 mg', 'VWX Pharmaceuticals', 'B12431', '2025-03-31', 2.00, 665)
+        ) AS source ([MedicineName], [GenericName], [DosageForm], [Strength], [Manufacturer], [BatchNumber], [ExpiryDate], [PricePerUnit], [StockQuantity])
+ON target.[MedicineName] = source.[MedicineName] AND target.[Strength] = source.[Strength]
+WHEN NOT MATCHED THEN
+    INSERT ([MedicineName], [GenericName], [DosageForm], [Strength], [Manufacturer], [BatchNumber], [ExpiryDate], [PricePerUnit], [StockQuantity], [CreatedBy], [CreatedOn], [ModifiedBy], [ModifiedOn], [IsActive])
+    VALUES (source.[MedicineName], source.[GenericName], source.[DosageForm], source.[Strength], source.[Manufacturer], source.[BatchNumber], source.[ExpiryDate], source.[PricePerUnit], source.[StockQuantity], NULL, SYSDATETIMEOFFSET(), NULL, NULL, 1);
