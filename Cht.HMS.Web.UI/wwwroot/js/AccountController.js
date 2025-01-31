@@ -52,27 +52,20 @@
                 var applicationUser = response.appUser;
                 storageService.set('ApplicationUser', applicationUser);
 
-                if (response.appUser.RoleId) {
-                    dataObjects.push({ roleId: response.appUser.RoleId });
-                }
-                if (response.appUser.TenantId) {
-                    dataObjects.push({ tenantId: response.appUser.TenantId });
-                }
-                var requests = actions.map((action, index) => {
-                    var ajaxConfig = {
-                        url: action,
-                        method: 'GET'
-                    };
-                    if (index === 0) {
-                        ajaxConfig.data = dataObjects[0];
+                var appUserInfo = storageService.get('ApplicationUser');
+                if (appUserInfo) {
+                    if (appUserInfo.TenantId && appUserInfo.DealerId) {
+                        window.location.href = "/DealerDashBoard/Index";
+                    } else if (appUserInfo.TenantId) {
+                        window.location.href = "/TenantDashBoard/Index";
+                    } else {
+                        window.location.href = "/Home/Index";
                     }
-                    if (index === 3) {
-                        ajaxConfig.data = dataObjects[1];
-                    }
-                    return $.ajax(ajaxConfig);
-                });
-                $(".se-pre-con").show();
-                $.when.apply($, requests).done(handlePermissionsSuccess).fail(handlePermissionsError);
+                }
+
+                updateEnvironmentAndVersion();
+
+                $(".se-pre-con").hide();
             }
         }
 
@@ -80,77 +73,6 @@
             console.error("Error in upserting data to server: " + error);
             $(".se-pre-con").hide();
         }
-
-        function handlePermissionsSuccess() {
-            $(".se-pre-con").show();
-            var responses = arguments;
-            var dbPermissions = responses[0][0].data;
-            var dbFeatures = responses[1][0].data;
-            var dbActivities = responses[2][0].data;
-            var dbTenant = responses[3][0].data;
-
-            var permissions = preparePermissions(dbFeatures, dbPermissions, dbActivities);
-            console.log(permissions);
-            var userPermissions = storageService.get('UserPermissions');
-            if (userPermissions) {
-                storageService.remove('UserPermissions');
-            }
-            storageService.set('UserPermissions', permissions);
-
-            var userTenant = storageService.get('UserTenant');
-            if (userTenant) {
-                storageService.remove('UserTenant');
-            }
-            storageService.set('UserTenant', dbTenant);
-
-            updateEnvironmentAndVersion();
-
-            var appUserInfo = storageService.get('ApplicationUser');
-            if (appUserInfo) {
-                if (appUserInfo.TenantId && appUserInfo.DealerId) {
-                    window.location.href = "/DealerDashBoard/Index";
-                } else if (appUserInfo.TenantId) {
-                    window.location.href = "/TenantDashBoard/Index";
-                } else {
-                    window.location.href = "/Home/Index";
-                }
-            }
-            $(".se-pre-con").hide();
-        }
-
-        function handlePermissionsError() {
-            console.log('One or more requests failed.');
-            $(".se-pre-con").hide();
-        }
-
-        function preparePermissions(features, permissions, activities) {
-            var activityMap = {};
-            if (activities) {
-                activities.forEach(activity => {
-                    activityMap[activity.ActivityId] = activity;
-                });
-
-                return features.map(feature => ({
-                    FeatureId: feature.FeatureId,
-                    FeatureName: feature.Code,
-                    Activities: permissions
-                        .filter(permission => permission.FeatureId === feature.FeatureId)
-                        .map(permission => {
-                            var activity = activityMap[permission.ActivityId];
-                            return {
-                                PermissionId: permission.PermissionId,
-                                RoleId: permission.RoleId,
-                                IsEnabled: permission.IsEnabled,
-                                IsDisabled: permission.IsDisabled,
-                                ActivityId: activity.ActivityId,
-                                ActivityName: activity.Name
-                            };
-                        })
-                }));
-            }
-            return [];
-        }
-
         function updateEnvironmentAndVersion() {
             var environment = storageService.get('Environment');
             if (environment) {

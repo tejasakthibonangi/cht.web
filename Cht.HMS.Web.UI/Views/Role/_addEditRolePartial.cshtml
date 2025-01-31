@@ -1,0 +1,34 @@
+﻿<form id="AddEditRoleForm">
+    <div class="sidebar" id="sidebar">
+        <div class="modal-header">
+            <h5 class="modal-title">Add/Edit Role</h5>
+            <button type="button" class="close" id="closeSidebar" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="Name">Name</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="Name" placeholder="Enter name" autofocus required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Code">Code</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-qrcode"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="Code" placeholder="Enter code" autofocus required>
+                </div>
+            </div>
+          
+        </div>
+        <div class="modal-footer">
+            <button type="submit" id="btnsubmit" class="btn btn-primary" form="AddEditRoleForm">Submit</button>
+        </div>
+    </div>
+</form>

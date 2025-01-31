@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Role Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <partial name="~/Views/Shared/_gridHeaderPartial.cshtml" />
+            <div class="card-body card-body-padding">
+                <div id="rolesGrid">
+                </div>
+            </div>
+        </div>
+        <partial name="_addEditRolePartial.cshtml" />
+    </div>
+    <partial name="~/Views/Shared/_dagAndDropFilesPartial.cshtml" />
+    <partial name="~/Views/Shared/_copyConfirmPartial.cshtml" />
+    <partial name="~/Views/Shared/_deleteConfirmPartial.cshtml" />
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/RoleController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new RoleController();
+        ctrl.init();
+    });
+</script>
