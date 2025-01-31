@@ -1,0 +1,22 @@
+﻿<div class="dropdown-menu dropdown-menu-right profile-notification">
+    <div class="pro-head">
+        <img src="~/assets/images/browser/chrome.png" class="img-radius" alt="User-Profile-Image">
+        <p id="employeeFullName"></p>
+        <a href="@Url.Action("Logout","Account",null)" class="dud-logout" title="Logout">
+            <i class="feather icon-log-out"></i>
+        </a>
+    </div>
+    <ul class="pro-body">
+        <li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
+        <li><a href="email_inbox.html" class="dropdown-item"><i class="feather icon-mail"></i> My Messages</a></li>
+        <li><a href="auth-signin.html" class="dropdown-item"><i class="feather icon-lock"></i> Lock Screen</a></li>
+    </ul>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/UserProfileController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new UserProfileController();
+        ctrl.init();
+    });
+</script>

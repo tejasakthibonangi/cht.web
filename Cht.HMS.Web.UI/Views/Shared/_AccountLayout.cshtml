@@ -16,54 +16,32 @@
     <link href="~/css/custom-tabulator.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="~/assets/css/sidebar.css" rel="stylesheet" />
+    <link href="~/assets/css/loader.css" rel="stylesheet" />
 </head>
 <body class="">
-   
     <div class="se-pre-con"></div>
-    <nav class="pcoded-navbar navbar-collapsed ">
-        <partial name="_sidebarPartial.cshtml" />
-    </nav>
-    <partial name="_headerPartail.cshtml" />
-
-    <div class="pcoded-main-container">
-        <div class="pcoded-content">
-            <div class="page-header">
-                <div class="page-block">
-                    <div class="row align-items-center">
-                        <div class="col-md-12">
-                            <div class="page-header-title">
-                                <h5 class="m-b-10">Dashboard Analytics</h5>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                <li class="breadcrumb-item"><a href="#!">Dashboard Analytics</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                @RenderBody()
-            </div>
+    
+    <div class="auth-wrapper">
+        <div class="auth-content text-center">
+            @RenderBody()
         </div>
     </div>
-
+ 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/assets/js/vendor-all.min.js"></script>
     <script src="~/assets/js/plugins/bootstrap.min.js"></script>
     <script src="~/assets/js/pcoded.js"></script>
     <!-- Tabulator JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
-    @*   <script src="~/assets/js/plugins/apexcharts.min.js"></script>
-    <script src="~/assets/js/pages/dashboard-main.js"></script> *@
+    <script src="~/assets/js/plugins/apexcharts.min.js"></script>
+    <script src="~/assets/js/pages/dashboard-main.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/CommonController.js"></script>
     <script src="~/js/StorageService.js"></script>
     <script src="~/js/ConnectivityController.js"></script>
     <script src="~/lib/xlsx/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
 
- 
+   
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(window).on('load', function () {
