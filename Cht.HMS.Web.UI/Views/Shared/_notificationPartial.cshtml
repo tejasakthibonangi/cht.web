@@ -1,0 +1,52 @@
+﻿
+<div class="dropdown">
+    <a class="dropdown-toggle" id="show_all">
+        <i class="icon feather icon-bell"></i>
+        <span class="badge badge-pill badge-danger">5</span>
+    </a>
+  @*   <div class="dropdown-menu dropdown-menu-right notification">
+        <div class="noti-head">
+            <h6 class="d-inline-block m-b-0">Notifications</h6>
+            <div class="float-right">
+                <a href="#!" class="m-r-10">mark as read</a>
+                <a href="#!">clear all</a>
+            </div>
+        </div>
+        <ul class="noti-body"></ul>
+        <div class="noti-footer">
+            <a id="show_all">show all</a>
+        </div>
+        <partial name="~/Views/Shared/_inboxPartial.cshtml" />
+    </div> *@
+    <partial name="~/Views/Shared/_inboxPartial.cshtml" />
+</div>
+<style>
+    /* Remove cell borders */
+    .tabulator .tabulator-cell {
+        border: none;
+    }
+
+    /* Remove column header borders */
+    .tabulator .tabulator-col {
+        border-right: none;
+    }
+
+    /* Optionally, remove row borders if needed */
+    .tabulator .tabulator-row {
+        border-bottom: none;
+    }
+
+    /* Adjust padding if needed */
+    .tabulator .tabulator-cell {
+        padding: 8px;
+    }
+
+</style>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/UserHeaderController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new UserHeaderController();
+        ctrl.init();
+    });
+</script>

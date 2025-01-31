@@ -1,0 +1,30 @@
+﻿<div class="navbar-wrapper  ">
+    <div class="navbar-content scroll-div ">
+
+        <partial name="_userProfileSidebarPartial.cshtml" />
+
+        <ul class="nav pcoded-inner-navbar ">
+            <li class="nav-item pcoded-menu-caption">
+                <label>navigation</label>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index","Home",null)" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+            </li>
+
+            <li class="nav-item pcoded-hasmenu">
+                <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">master libraries</span></a>
+                <ul class="pcoded-submenu">
+                    <li><a href="@Url.Action("Index","Activity",null)">activity</a></li>
+                </ul>
+            </li>
+           
+            <li class="nav-item pcoded-hasmenu">
+                <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-sunset"></i></span><span class="pcoded-mtext">user management</span></a>
+                <ul class="pcoded-submenu">
+                    <li><a href="@Url.Action("Index","User",null)">user</a></li>
+                </ul>
+            </li>
+           
+        </ul>
+    </div>
+</div>
