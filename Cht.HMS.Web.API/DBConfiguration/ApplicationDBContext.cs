@@ -19,5 +19,6 @@ namespace Cht.HMS.Web.API.DBConfiguration
         //from here add your db sets 
 
         public DbSet<Role> roles { get; set; }
+        public DbSet<ConsultationDetails> consultationDetails { get; set; }
     }
 }
