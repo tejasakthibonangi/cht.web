@@ -1,0 +1,53 @@
+﻿<!-- [ breadcrumb ] start -->
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","Home",null)"><i class="feather icon-home"></i></a></li>
+                    <li class="breadcrumb-item"><a id="dynamicBreadcrumb"></a></li>
+                </ul>
+            </div>
+            <div class="col-md-6 text-right">
+                <button id="envVersionButton" class="btn  btn-md">Loading...</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ breadcrumb ] end -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const environment = storageService.get('Environment');
+        const version = storageService.get('Version');
+        document.getElementById("envVersionButton").textContent = `${environment} - ${version}`;
+
+        // Extract the current path and set the breadcrumb link and title
+        const currentPath = window.location.pathname;
+        const pathSegments = currentPath.split('/').filter(segment => segment);
+
+        // Check if there are enough segments in the path
+        if (pathSegments.length > 1) {
+            const dynamicSegment = pathSegments[0];
+            const dynamicIndex = pathSegments[1]; // Get the last segment for index
+            const dynamicPath = `/${dynamicSegment}/${dynamicIndex}`;
+            document.getElementById("dynamicBreadcrumb").setAttribute("href", dynamicPath);
+            document.getElementById("dynamicBreadcrumb").textContent = `${dynamicSegment.charAt(0).toUpperCase() + dynamicSegment.slice(1)}`;
+        } else {
+            document.getElementById("dynamicBreadcrumb").setAttribute("href", "#!");
+            document.getElementById("dynamicBreadcrumb").textContent = "Dashboard Analytics";
+        }
+        const envVersionButton = document.getElementById("envVersionButton");
+        envVersionButton.textContent = `${environment} - ${version}`;
+
+        // Check if the hostname is localhost or production and update the button class accordingly
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost') {
+            envVersionButton.classList.add('btn-warning');
+            envVersionButton.classList.remove('btn-primary');
+        } else {
+            envVersionButton.classList.add('btn-primary');
+            envVersionButton.classList.remove('btn-warning');
+        }
+    });
+</script>
