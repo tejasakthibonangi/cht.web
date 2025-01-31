@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cht.HMS.Web.API.Models
 {
     [Table("ConsultationDetails")]
-    public class ConsultationDetail
+    public class ConsultationDetails
     {
         [Key]
         public Guid DetailId { get; set; }
