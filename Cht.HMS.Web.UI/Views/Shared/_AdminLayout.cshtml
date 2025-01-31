@@ -54,7 +54,7 @@
     <script src="~/lib/xlsx/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
 
-  
+    @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(window).on('load', function () {

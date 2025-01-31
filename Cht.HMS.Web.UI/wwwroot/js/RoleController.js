@@ -34,7 +34,7 @@
                     formatter: function (cell, formatterParams, onRendered) {
                         onRendered(function () {
                             var row = cell.getRow();
-                            var rowId = row.getData().Id;
+                            var rowId = row.getData().RoleId;
                             cell.getElement().innerHTML = `<div class='centered-checkbox'><input type='checkbox' id='childRoleChkbox-${rowId}' class='childRoleChkbox' data-row-id='${rowId}'/></div>`;
                             cell.getElement().querySelector('input[type="checkbox"]').checked = row.isSelected();
                         });
@@ -81,10 +81,10 @@
                 // Handle the changed row data
                 if (changedRow) {
                     var rows = table.getRows();
-                    var foundRow = rows.find(row => row.getData().Id === changedRow.Id);
+                    var foundRow = rows.find(row => row.getData().RoleId === changedRow.RoleId);
 
                     if (foundRow) {
-                        var rowId = foundRow.getData().Id;
+                        var rowId = foundRow.getData().RoleId;
                         var checkbox = document.querySelector(`#childRoleChkbox-${rowId}`);
                         if (checkbox.checked && currentSelectedRows.length === 1) {
                             self.currectSelectedRole = changedRow;
@@ -134,7 +134,7 @@
         });
         //-----------------Permission icon click--------------------//
         $('#permissionBtn').on('click', function () {
-            window.location.href = "/Permission/ManagerPermission?roleId=" + self.currectSelectedRole.Id;
+            window.location.href = "/Permission/ManagerPermission?roleId=" + self.currectSelectedRole.RoleId;
         });
         //---------------Permission icon area closed ------------------//
 
@@ -152,7 +152,7 @@
             e.preventDefault();
             var formData = getFormData('#AddEditRoleForm');
             var role = addCommonProperties(formData);
-            role.Id = self.currectSelectedRole ? self.currectSelectedRole.Id : null;
+            role.RoleId = self.currectSelectedRole ? self.currectSelectedRole.RoleId : null;
 
             self.addeditrole(role, false);
         });
