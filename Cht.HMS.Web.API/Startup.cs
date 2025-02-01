@@ -2,10 +2,13 @@
 using Cht.HMS.Web.API.DBConfiguration;
 using Cht.HMS.Web.API.Manager;
 using Cht.HMS.Web.API.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Cht.HMS.Web.API
 {
@@ -25,8 +28,7 @@ namespace Cht.HMS.Web.API
 
             app.UseAuthorization();
 
-            //app.UseCors("CorsPolicy");
-
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
@@ -44,7 +46,7 @@ namespace Cht.HMS.Web.API
             });
 
         }
-        public void ConfigureServices(IServiceCollection services) 
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"),
                                                        sqlServerOptionsAction: sqlOptions =>
@@ -77,8 +79,41 @@ namespace Cht.HMS.Web.API
             services.AddScoped<IPharmacyManager, PharmacyDataManager>();
             services.AddScoped<IPrescriptionManager, PrescriptionDataManager>();
             services.AddScoped<IRadiologyManager, RadiologyDataManager>();
-
+            services.AddScoped<IAuthenticationManager, AuthenticationDataManager>();
             services.AddScoped<IUserManager, UserDataManager>();
+
+            var tokenKey = _configuration.GetValue<string>("tokenKey");
+
+            /*services.AddScoped<IAuthenticationManager>(x=> new AuthenticationDataManager(tokenKey,x.GetRequiredServicere))*/
+            ;
+
+            var key = Encoding.ASCII.GetBytes(tokenKey);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateActor = false
+                };
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                                   builder => builder
+                                  .AllowAnyOrigin()
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod()
+                                  .WithMethods("GET", "PUT", "DELETE", "POST", "PATCH")
+                                  );
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -98,8 +133,31 @@ namespace Cht.HMS.Web.API
                         Name = "tejasakthi.bonangi@yahoo.com",
                         Url = new Uri("https://test.in")
                     }
+
                 });
-               
+                c.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter the Authorization header using the Bearer scheme.",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                 {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Authorization"
+                                }
+                            },
+                            Array.Empty<string>()
+                        }
+                    });
+
             });
         }
     }

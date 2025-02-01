@@ -6,6 +6,6 @@ namespace Cht.HMS.Web.API.Manager
     {
         Task<Radiology> InsertOrUpdateDoctorAsync(Radiology radiology);
         Task<Radiology> GetDoctorByIdAsync(Guid RadiologyId);
-        Task<List<Radiology>> GetDoctorsAsync();
+        Task<List<Radiology>> GetRadiologysAsync();
     }
 }

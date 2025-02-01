@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cht.HMS.Web.API.Models
 {
-    [Table("")]
+    [Table("Pharmacy")]
     public class Pharmacy
     {
         [Key]

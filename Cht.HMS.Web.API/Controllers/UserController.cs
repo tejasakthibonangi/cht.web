@@ -1,4 +1,5 @@
-﻿using Cht.HMS.Web.API.Manager;
+﻿using Cht.HMS.Web.API.Filters;
+using Cht.HMS.Web.API.Manager;
 using Cht.HMS.Web.API.Models;
 using Cht.HMS.Web.Utility;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ namespace Cht.HMS.Web.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ChtAuthorize]
     public class UserController : ControllerBase
     {
         private readonly IUserManager _userManager;

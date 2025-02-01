@@ -18,7 +18,8 @@ namespace Cht.HMS.Web.API.DataManager
             List<UserInfirmation> userInfirmations = new List<UserInfirmation>();
 
             userInfirmations = (from user in _dBContext.users.ToList()
-                                join role in _dBContext.roles.ToList() on user.RoleId equals role.Id into roleJoinInfo   from roleInfo in roleJoinInfo.DefaultIfEmpty()
+                                join role in _dBContext.roles.ToList() on user.RoleId equals role.RoleId into roleJoinInfo
+                                from roleInfo in roleJoinInfo.DefaultIfEmpty()
                                 select new UserInfirmation
                                 {
                                     Id = user.Id,
@@ -57,6 +58,7 @@ namespace Cht.HMS.Web.API.DataManager
 
         public async Task<User> InsertOrUpdateUserAsync(UserRegistration userRegistration)
         {
+
             User dbuser = new User()
             {
                 FirstName = userRegistration.FirstName,
@@ -75,6 +77,10 @@ namespace Cht.HMS.Web.API.DataManager
 
             if (dbuser.Id == Guid.Empty || dbuser.Id == null)
             {
+                var password = ChtHashSalt.GenerateSaltedHash("Admin@2025");
+                dbuser.PasswordSalt = password.Salt;
+                dbuser.PasswordHash = password.Hash;
+
                 await _dBContext.users.AddAsync(dbuser);
             }
             else
