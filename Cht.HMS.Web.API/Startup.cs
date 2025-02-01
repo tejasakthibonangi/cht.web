@@ -1,6 +1,7 @@
 ﻿using Cht.HMS.Web.API.DataManager;
 using Cht.HMS.Web.API.DBConfiguration;
 using Cht.HMS.Web.API.Manager;
+using Cht.HMS.Web.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -64,6 +65,18 @@ namespace Cht.HMS.Web.API
             services.AddMvc().AddXmlSerializerFormatters();
 
             services.AddScoped<IRoleManager, RoleDataManager>();
+            services.AddScoped<IConsultationDetailsManager, ConsultationDetailsDataManager>();
+            services.AddScoped<IDoctorAssignmentManager, DoctorAssignmentDataManager>();
+            services.AddScoped<IDoctorManager, DoctorDataManager>();
+            services.AddScoped<ILabTestsManager, LabTestsDataManager>();
+            services.AddScoped<IMedicalConsultationManager, MedicalConsultationDataManager>();
+            services.AddScoped<IMedicinesManager, MedicinesDataManager>();
+            services.AddScoped<IPatientRegistrationManager, PatientRegistrationDataManager>();
+            services.AddScoped<IPatientTypeManager, PatientTypeDataManager>();
+            services.AddScoped<IPaymentTypeManager, PaymentTypeDataManager>();
+            services.AddScoped<IPharmacyManager, PharmacyDataManager>();
+            services.AddScoped<IPrescriptionManager, PrescriptionDataManager>();
+            services.AddScoped<IRadiologyManager, RadiologyDataManager>();
 
             services.AddScoped<IUserManager, UserDataManager>();
 
