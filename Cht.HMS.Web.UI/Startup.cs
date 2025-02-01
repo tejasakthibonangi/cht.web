@@ -39,6 +39,7 @@ namespace Cht.HMS.Web.UI
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -60,8 +61,13 @@ namespace Cht.HMS.Web.UI
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Administrator", policy => policy.RequireRole("Administrator"));
-                options.AddPolicy("System Administrator", policy => policy.RequireRole("System Administrator"));
-                options.AddPolicy("Tenant", policy => policy.RequireRole("Tenant"));
+                options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor"));
+                options.AddPolicy("Pharmacist", policy => policy.RequireRole("Pharmacist"));
+                options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse"));
+                options.AddPolicy("Executive", policy => policy.RequireRole("Executive"));
+                options.AddPolicy("Lab technicians", policy => policy.RequireRole("Lab technicians"));
+                options.AddPolicy("X-ray technicians", policy => policy.RequireRole("X-ray technicians"));
             });
 
             services.AddNotyf(config =>
@@ -70,8 +76,6 @@ namespace Cht.HMS.Web.UI
                 config.IsDismissable = true;
                 config.Position = NotyfPosition.TopCenter;
             });
-
-            services.AddSignalR();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -106,7 +110,7 @@ namespace Cht.HMS.Web.UI
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Role}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
             });
         }
     }

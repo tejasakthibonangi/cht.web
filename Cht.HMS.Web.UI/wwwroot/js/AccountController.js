@@ -54,15 +54,21 @@
 
                 var appUserInfo = storageService.get('ApplicationUser');
                 if (appUserInfo) {
-                    if (appUserInfo.TenantId && appUserInfo.DealerId) {
-                        window.location.href = "/DealerDashBoard/Index";
-                    } else if (appUserInfo.TenantId) {
-                        window.location.href = "/TenantDashBoard/Index";
+                    if (appUserInfo.RoleName === "Doctor") {
+                        window.location.href = "/DoctorDashboard/Index";
+                    } else if (appUserInfo.RoleName === "Executive") {
+                        window.location.href = "/ExecutiveDashboard/Index";
+                    }
+                    else if (appUserInfo.RoleName === "Pharmacist") {
+                        window.location.href = "/PharmacistDashBoard/Index";
+                    }
+                    else if (appUserInfo.RoleName === "Lab technicians") {
+                        window.location.href = "/LabTechnicianDashBoard/Index";
                     } else {
+
                         window.location.href = "/Home/Index";
                     }
                 }
-
                 updateEnvironmentAndVersion();
 
                 $(".se-pre-con").hide();
