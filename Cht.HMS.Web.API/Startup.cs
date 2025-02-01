@@ -65,6 +65,8 @@ namespace Cht.HMS.Web.API
 
             services.AddScoped<IRoleManager, RoleDataManager>();
 
+            services.AddScoped<IUserManager, UserDataManager>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

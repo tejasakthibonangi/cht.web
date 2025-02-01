@@ -20,5 +20,6 @@ namespace Cht.HMS.Web.API.DBConfiguration
 
         public DbSet<Role> roles { get; set; }
         public DbSet<ConsultationDetails> consultationDetails { get; set; }
+        public DbSet<User> users { get; set; }
     }
 }

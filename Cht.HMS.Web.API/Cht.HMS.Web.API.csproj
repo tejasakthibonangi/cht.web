@@ -30,4 +30,8 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Cht.HMS.Web.Utility\Cht.HMS.Web.Utility.csproj" />
+  </ItemGroup>
+
 </Project>

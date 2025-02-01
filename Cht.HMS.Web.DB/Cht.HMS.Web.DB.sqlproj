@@ -75,6 +75,7 @@
     <Build Include="Tables\Prescription.sql" />
     <Build Include="Tables\Pharmacy.sql" />
     <Build Include="Tables\Radiology.sql" />
+    <Build Include="Tables\User.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Post-Deployment\Script.PostDeployment.sql" />
