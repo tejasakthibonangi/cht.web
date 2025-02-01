@@ -8,7 +8,7 @@ namespace Cht.HMS.Web.API.DataManager
     public class RoleDataManager : IRoleManager
     {
         private readonly ApplicationDBContext _dbContext;
-        public RoleDataManager(ApplicationDBContext dbContext) 
+        public RoleDataManager(ApplicationDBContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -24,17 +24,17 @@ namespace Cht.HMS.Web.API.DataManager
 
         public async Task<Role> InsertOrUpdateRole(Role role)
         {
-            if(role != null)
+            if (role != null)
             {
-                if(role.RoleId == Guid.Empty)
+                if (role.RoleId == Guid.Empty)
                 {
-                    _dbContext.roles.AddAsync(role);
+                    await _dbContext.roles.AddAsync(role);
                 }
                 else
                 {
                     var _role = await _dbContext.roles.FindAsync(role.RoleId);
 
-                    if(_role != null)
+                    if (_role != null)
                     {
                         _role.Name = role.Name;
                         _role.Code = role.Code;
