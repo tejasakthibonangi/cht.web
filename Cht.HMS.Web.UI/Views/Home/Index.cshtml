@@ -1,8 +1,18 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Admn Area";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-xl-12">
+        <partial name="_mainUserPartial.cshtml" />
+        <partial name="_insertOrUpdateUserPartial.cshtml" />
+    </div>
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/UserController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new UserController();
+        ctrl.init();
+    });
+</script>

@@ -18,12 +18,12 @@ namespace Cht.HMS.Web.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetDoctorByIdAsync")]
-        public async Task<IActionResult> GetDoctorByIdAsync(Guid DoctorId)
+        [Route("GetDoctorByIdAsync/{doctorId}")]
+        public async Task<IActionResult> GetDoctorByIdAsync(Guid doctorId)
         {
             try
             {
-                var responce = await _doctorManager.GetDoctorByIdAsync(DoctorId);
+                var responce = await _doctorManager.GetDoctorByIdAsync(doctorId);
 
                 return Ok(responce);
             }

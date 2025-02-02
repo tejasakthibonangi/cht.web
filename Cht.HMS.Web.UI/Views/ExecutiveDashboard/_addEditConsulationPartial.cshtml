@@ -1,0 +1,192 @@
+﻿<form id="AddEditPatientRegistrationForm">
+    <div class="sidebar" id="sidebar">
+        <div class="modal-header">
+            <h5 class="modal-title">Add/Edit Patient</h5>
+            <button type="button" class="close" id="closeSidebar" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="PatientName">Patient Name</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="PatientName" placeholder="Enter patient name" required>
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="DateOfVisit">Date of Visit</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="date" class="form-control" id="DateOfVisit" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="TimeOfVisit">Time of Visit</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                        </div>
+                        <input type="time" class="form-control" id="TimeOfVisit" required>
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="ComingFrom">Coming From</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-map-marker-alt"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="ComingFrom" placeholder="Enter source of visit" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="Reference">Reference</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="Reference" placeholder="Enter reference" required>
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="PhoneNo">Phone Number</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-mobile-alt"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="PhoneNo" placeholder="Enter phone number" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="AlternatePhoneNo">Alternate Phone</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-mobile-alt"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="AlternatePhoneNo" placeholder="Enter alternate phone number">
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="Email">Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <input type="email" class="form-control" id="Email" placeholder="Enter email" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="Gender">Gender</label>
+                    <select class="form-control" id="Gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="DOB">Date of Birth</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-birthday-cake"></i></span>
+                        </div>
+                        <input type="date" class="form-control" id="DOB" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="Height">Height (in cm)</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-ruler"></i></span>
+                        </div>
+                        <input type="number" class="form-control" id="Height" placeholder="Enter height" step="0.1">
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="Weight">Weight (in kg)</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-weight"></i></span>
+                        </div>
+                        <input type="number" class="form-control" id="Weight" placeholder="Enter weight" step="0.1">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="BP">Blood Pressure</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-tint"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="BP" placeholder="Enter blood pressure">
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="Sugar">Sugar Level</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-syringe"></i></span>
+                        </div>
+                        <input type="number" class="form-control" id="Sugar" placeholder="Enter sugar level" step="0.1">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="Temperature">Temperature (in °C)</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-thermometer-half"></i></span>
+                        </div>
+                        <input type="number" class="form-control" id="Temperature" placeholder="Enter temperature" step="0.1">
+                    </div>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="Fee">Fee</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-money-bill"></i></span>
+                        </div>
+                        <input type="number" class="form-control" id="Fee" placeholder="Enter fee" step="0.01">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <label for="DoctorAssignedId">Doctor Assigned</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-user-md"></i></span>
+                        </div>
+                        <select id="DoctorAssignedId" class="form-control custom-select"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <label for="HealthIssues">Health Issues</label>
+                    <textarea class="form-control" id="HealthIssues" placeholder="Enter health issues" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" id="btnsubmit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>

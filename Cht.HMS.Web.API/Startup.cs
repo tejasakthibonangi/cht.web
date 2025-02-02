@@ -81,7 +81,7 @@ namespace Cht.HMS.Web.API
             services.AddScoped<IRadiologyManager, RadiologyDataManager>();
             services.AddScoped<IAuthenticationManager, AuthenticationDataManager>();
             services.AddScoped<IUserManager, UserDataManager>();
-
+            services.AddScoped<IPatientManager, PatientDataManager>();
             var tokenKey = _configuration.GetValue<string>("tokenKey");
 
             /*services.AddScoped<IAuthenticationManager>(x=> new AuthenticationDataManager(tokenKey,x.GetRequiredServicere))*/
