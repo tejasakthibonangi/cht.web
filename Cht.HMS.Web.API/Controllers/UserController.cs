@@ -20,7 +20,7 @@ namespace Cht.HMS.Web.API.Controllers
         }
         [HttpPost]
         [Route("InsertOrUpdateUserAsync")]
-        public async Task<IActionResult> InsertOrUpdateUserAsync(UserRegistration user, CancellationToken cancellationToken)
+        public async Task<IActionResult> InsertOrUpdateUserAsync(UserRegistration user)
         {
             try
             {

@@ -25,5 +25,5 @@
     [ModifiedBy]             UNIQUEIDENTIFIER   NULL,
     [ModifiedOn]             DATETIMEOFFSET     NULL,
     [IsActive]               BIT                DEFAULT 1,
-    FOREIGN KEY (DoctorAssignedId) REFERENCES [dbo].[DoctorAssignment](AssignmentId)
+    FOREIGN KEY (DoctorAssignedId) REFERENCES [dbo].[Doctor](DoctorId)
 );

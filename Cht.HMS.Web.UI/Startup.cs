@@ -39,7 +39,11 @@ namespace Cht.HMS.Web.UI
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRepositoryFactory, RepositoryFactory>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>(); 
             services.AddScoped<IAuthenticateService, AuthenticateService>();
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IDoctorService, DoctorService>();
+            
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);

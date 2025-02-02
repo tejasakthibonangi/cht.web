@@ -1,0 +1,17 @@
+﻿<!-- Empty <ul> element where we'll render the dynamic navigation -->
+<ul class="nav pcoded-inner-navbar" id="dynamic-nav"></ul>
+
+<style>
+    .pcoded-submenu {
+        display: none;
+        padding-left: 20px; /* Optional: style for submenu */
+    }
+</style>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/DynamicSideBarController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new DynamicSideBarController();
+        ctrl.init();
+    });
+</script>
