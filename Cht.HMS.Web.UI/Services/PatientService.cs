@@ -36,10 +36,13 @@ namespace Cht.HMS.Web.UI.Services
             var uri = Path.Combine("Patient/SearchPatientRegistrationsAsync", inputString.ToString());
             return await _repository.SendAsync<List<PatientRegistration>>(HttpMethod.Get, uri);
         }
-
         public async Task<PatientRegistration> PatientRegistrationAsync(PatientRegistration registration)
         {
             return await _repository.SendAsync<PatientRegistration, PatientRegistration>(HttpMethod.Post, "Patient/InsertOrUpdatePatientRegistrationAsync", registration);
+        }
+        public async Task<PatientInformation> UpsertPatientConsultationDetailsAsync(PatientInformation registration)
+        {
+            return await _repository.SendAsync<PatientInformation, PatientInformation>(HttpMethod.Post, "Patient/UpsertPatientConsultationDetailsAsync", registration);
         }
     }
 }

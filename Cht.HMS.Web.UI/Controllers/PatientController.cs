@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Cht.HMS.Web.UI.Interfaces;
 using Cht.HMS.Web.UI.Models;
+using Cht.HMS.Web.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
@@ -70,6 +71,26 @@ namespace Cht.HMS.Web.UI.Controllers
             {
                 // Call your service method to insert or update the patient registration.
                 var response = await _patientService.PatientRegistrationAsync(registration);
+
+                // Return a success response with the data.
+                return Json(new { data = response });
+            }
+            catch (Exception ex)
+            {
+                // Log the error and notify the user.
+                _notyfService.Error(ex.Message);
+
+                // Re-throw the exception or return an error response as per your requirement.
+                throw ex;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpsertPatientConsultationDetails([FromBody] PatientInformation registration)
+        {
+            try
+            {
+                // Call your service method to insert or update the patient registration.
+                var response = await _patientService.UpsertPatientConsultationDetailsAsync(registration);
 
                 // Return a success response with the data.
                 return Json(new { data = response });

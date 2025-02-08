@@ -17,5 +17,9 @@ namespace Cht.HMS.Web.API.Manager
 
         Task<PatientInformation> GetPatientDetailsAsync(Guid patientId);
 
+        Task<PatientInformation> UpsertPatientConsultationDetailsAsync(PatientInformation patientInformation);
+
+
+
     }
 }
