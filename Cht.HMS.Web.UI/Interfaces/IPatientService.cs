@@ -13,5 +13,7 @@ namespace Cht.HMS.Web.UI.Interfaces
         Task<List<PatientRegistration>> GetPatientByDoctorAsync(Guid doctorId);
 
         Task<PatientInformation> GetPatientDetailsAsync(Guid patientId);
+
+        Task<PatientInformation> UpsertPatientConsultationDetailsAsync(PatientInformation registration);
     }
 }

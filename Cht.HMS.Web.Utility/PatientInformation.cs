@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cht.HMS.Web.Utility
+﻿namespace Cht.HMS.Web.Utility
 {
     public class PatientInformation
     {
@@ -40,17 +34,19 @@ namespace Cht.HMS.Web.Utility
         public DateTimeOffset? ModifiedOn { get; set; }
         public bool IsActive { get; set; } = true;
         public PatientCunsultation patientCunsultation { get; set; }
+        public PatientPharmacyOrder patientPharmacyOrder { get; set; }
+        public PatientLabOrder patientLabOrder { get; set; }
     }
 
     public class PatientCunsultation
     {
         public PatientCunsultation()
         {
-            patientConsultationDetails=new PatientConsultationDetails();
+            patientConsultationDetails = new PatientConsultationDetails();
         }
-        public Guid ConsultationId { get; set; }
-        public Guid PatientId { get; set; }
-        public Guid DoctorId { get; set; }
+        public Guid? ConsultationId { get; set; }
+        public Guid? PatientId { get; set; }
+        public Guid? DoctorId { get; set; }
         public DateTimeOffset? ConsultationDate { get; set; }
         public TimeSpan? ConsultationTime { get; set; }
         public string? Symptoms { get; set; }
@@ -74,6 +70,73 @@ namespace Cht.HMS.Web.Utility
         public DateTime? FollowUpDate { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class PatientPharmacyOrder
+    {
+        public PatientPharmacyOrder()
+        {
+            patientPharmacyOrderDetails = new List<PatientPharmacyOrderDetail>();
+        }
+        public Guid? OrderId { get; set; }
+        public Guid? PatientId { get; set; }
+        public Guid? ConsultationId { get; set; }
+        public DateTimeOffset OrderDate { get; set; }
+        public int ItemsQty { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+        public List<PatientPharmacyOrderDetail> patientPharmacyOrderDetails { get; set; }
+    }
+    public class PatientPharmacyOrderDetail
+    {
+        public Guid? OrderDetailId { get; set; }
+        public Guid? OrderId { get; set; }
+        public Guid? MedicineId { get; set; }
+        public int Quantity { get; set; }
+        public decimal PricePerUnit { get; set; }
+        public decimal TotalPrice { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class PatientLabOrder
+    {
+        public PatientLabOrder()
+        {
+            patientLabOrderDetails = new List<PatientLabOrderDetail>();
+        }
+        public Guid? LabOrderId { get; set; }
+        public Guid? PatientId { get; set; }
+        public Guid? ConsultationId { get; set; }
+        public DateTimeOffset OrderDate { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+        public List<PatientLabOrderDetail> patientLabOrderDetails { get; set; }
+    }
+    public class PatientLabOrderDetail
+    {
+        public Guid? LabOrderDetailId { get; set; }
+        public Guid? LabOrderId { get; set; }
+        public Guid? TestId { get; set; }
+        public int Quantity { get; set; }
+        public decimal? PricePerUnit { get; set; }
+        public decimal? TotalPrice { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public Guid? ModifiedBy { get; set; }
         public DateTimeOffset? ModifiedOn { get; set; }
         public bool IsActive { get; set; }

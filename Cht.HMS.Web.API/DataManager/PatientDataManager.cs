@@ -2,9 +2,12 @@
 using Cht.HMS.Web.API.Manager;
 using Cht.HMS.Web.API.Models;
 using Cht.HMS.Web.Utility;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Cryptography.Xml;
 
 namespace Cht.HMS.Web.API.DataManager
 {
@@ -102,8 +105,82 @@ namespace Cht.HMS.Web.API.DataManager
                             Treatment = patientCunsultationDetails.Treatment
                         };
                     }
-                }
 
+                    var pharmacyOrder = await _dbContext.pharmacyOrders.Where(x => x.PatientId == patientId && x.ConsultationId == patientCunsultation.ConsultationId).FirstOrDefaultAsync();
+
+                    if (pharmacyOrder != null)
+                    {
+
+                        var pharmacyOrderDetailList = await _dbContext.pharmacyOrderDetails.Where(x => x.OrderId == pharmacyOrder.OrderId).ToListAsync();
+
+
+                        patientInformation.patientPharmacyOrder = new PatientPharmacyOrder()
+                        {
+                            OrderId = pharmacyOrder.OrderId,
+                            PatientId = pharmacyOrder.PatientId,
+                            ConsultationId = pharmacyOrder.ConsultationId,
+                            OrderDate = pharmacyOrder.OrderDate,
+                            ItemsQty = pharmacyOrder.ItemsQty,
+                            TotalAmount = pharmacyOrder.TotalAmount,
+                            CreatedBy = pharmacyOrder.CreatedBy,
+                            CreatedOn = pharmacyOrder.CreatedOn,
+                            ModifiedBy = pharmacyOrder.ModifiedBy,
+                            ModifiedOn = pharmacyOrder.ModifiedOn,
+                            IsActive = pharmacyOrder.IsActive,
+                            patientPharmacyOrderDetails = pharmacyOrderDetailList.Select(orderDetail => new PatientPharmacyOrderDetail()
+                            {
+                                OrderDetailId = orderDetail.OrderDetailId,
+                                OrderId = orderDetail.OrderId,
+                                MedicineId = orderDetail.MedicineId,
+                                Quantity = orderDetail.Quantity,
+                                PricePerUnit = orderDetail.PricePerUnit,
+                                TotalPrice = orderDetail.TotalPrice,
+                                CreatedBy = orderDetail.CreatedBy,
+                                CreatedOn = orderDetail.CreatedOn,
+                                ModifiedBy = orderDetail.ModifiedBy,
+                                ModifiedOn = DateTimeOffset.UtcNow, // Set to current time
+                                IsActive = orderDetail.IsActive
+                            }).ToList()
+                        };
+                    }
+
+                    var labOrder = await _dbContext.labOrders.Where(x => x.PatientId == patientId && x.ConsultationId == patientCunsultation.ConsultationId).FirstOrDefaultAsync();
+
+                    if (labOrder != null)
+                    {
+                        var labOrderDetailList = await _dbContext.labOrderDetails
+                            .Where(x => x.LabOrderId == labOrder.LabOrderId)
+                            .ToListAsync();
+
+                        patientInformation.patientLabOrder = new PatientLabOrder()
+                        {
+                            LabOrderId = labOrder.LabOrderId,
+                            PatientId = labOrder.PatientId,
+                            ConsultationId = labOrder.ConsultationId,
+                            OrderDate = labOrder.OrderDate,
+                            TotalAmount = labOrder.TotalAmount,
+                            CreatedBy = labOrder.CreatedBy,
+                            CreatedOn = labOrder.CreatedOn,
+                            ModifiedBy = labOrder.ModifiedBy,
+                            ModifiedOn = labOrder.ModifiedOn,
+                            IsActive = labOrder.IsActive,
+                            patientLabOrderDetails = labOrderDetailList.Select(orderDetail => new PatientLabOrderDetail()
+                            {
+                                LabOrderDetailId = orderDetail.LabOrderDetailId,
+                                LabOrderId = orderDetail.LabOrderId,
+                                TestId = orderDetail.TestId,
+                                Quantity = orderDetail.Quantity,
+                                PricePerUnit = orderDetail.PricePerUnit,
+                                TotalPrice = orderDetail.TotalPrice,
+                                CreatedBy = orderDetail.CreatedBy,
+                                CreatedOn = orderDetail.CreatedOn,
+                                ModifiedBy = orderDetail.ModifiedBy,
+                                ModifiedOn = DateTimeOffset.UtcNow, // Set to current time
+                                IsActive = orderDetail.IsActive
+                            }).ToList()
+                        };
+                    }
+                }
             }
 
             return patientInformation;
@@ -278,6 +355,271 @@ namespace Cht.HMS.Web.API.DataManager
                 IsActive = patient.IsActive,
                 DoctorName = doctor?.DoctorName ?? "Unknown Doctor"
             };
+        }
+
+        public async Task<PatientInformation> UpsertPatientConsultationDetailsAsync(PatientInformation patientInformation)
+        {
+            if (patientInformation != null)
+            {
+                var existingPatientRegistration = await _dbContext.patientRegistrations.FindAsync(patientInformation.PatientId);
+                existingPatientRegistration.CurrentStatus = patientInformation.CurrentStatus;
+                existingPatientRegistration.ModifiedBy = patientInformation.ModifiedBy;
+                existingPatientRegistration.ModifiedOn = patientInformation.ModifiedOn;
+                existingPatientRegistration.IsActive = patientInformation.IsActive;
+
+            }
+
+            var exitingPatientCunsultation = await _dbContext.medicalConsultations.Where(x => x.PatientId == patientInformation.PatientId).FirstOrDefaultAsync();
+            if (exitingPatientCunsultation != null)
+            {
+                exitingPatientCunsultation.ConsultationId = patientInformation.patientCunsultation.ConsultationId.Value; // Ensure a valid Guid
+                exitingPatientCunsultation.DoctorId = patientInformation.patientCunsultation.DoctorId.Value;
+                exitingPatientCunsultation.ConsultationDate = patientInformation.patientCunsultation.ConsultationDate.Value;
+                exitingPatientCunsultation.ConsultationTime = patientInformation.patientCunsultation.ConsultationTime.Value;
+                exitingPatientCunsultation.Symptoms = patientInformation.patientCunsultation.Symptoms;
+                exitingPatientCunsultation.Diagnosis = patientInformation.patientCunsultation.Diagnosis;
+                exitingPatientCunsultation.Remarks = patientInformation.patientCunsultation.Remarks;
+                exitingPatientCunsultation.ModifiedBy = patientInformation.patientCunsultation.ModifiedBy;
+                exitingPatientCunsultation.ModifiedOn = DateTimeOffset.UtcNow; // Set to current time
+                exitingPatientCunsultation.IsActive = patientInformation.patientCunsultation.IsActive;
+
+
+                var exitingPatientCunsultationDetails = await _dbContext.consultationDetails.Where(x => x.ConsultationId == exitingPatientCunsultation.ConsultationId).FirstOrDefaultAsync();
+                if (exitingPatientCunsultationDetails != null)
+                {
+                    exitingPatientCunsultationDetails.Treatment = patientInformation.patientCunsultation.patientConsultationDetails.Treatment;
+                    exitingPatientCunsultationDetails.Diagnosis = patientInformation.patientCunsultation.patientConsultationDetails.Diagnosis;
+                    exitingPatientCunsultationDetails.FollowUpDate = patientInformation.patientCunsultation.patientConsultationDetails.FollowUpDate;
+                    exitingPatientCunsultationDetails.Advice = patientInformation.patientCunsultation.patientConsultationDetails.Advice;
+                    exitingPatientCunsultationDetails.ModifiedBy = patientInformation.patientCunsultation.patientConsultationDetails.ModifiedBy;
+                    exitingPatientCunsultationDetails.ModifiedOn = DateTimeOffset.UtcNow; // Set to current time
+                    exitingPatientCunsultationDetails.IsActive = patientInformation.patientCunsultation.patientConsultationDetails.IsActive;
+                }
+
+                var existingPatientPharmacyOrder = await _dbContext.pharmacyOrders.Where(x => x.PatientId == patientInformation.PatientId && x.ConsultationId == exitingPatientCunsultation.ConsultationId).FirstOrDefaultAsync();
+
+                if (existingPatientPharmacyOrder != null)
+                {
+                    existingPatientPharmacyOrder.ItemsQty = patientInformation.patientPharmacyOrder.ItemsQty;
+                    existingPatientPharmacyOrder.TotalAmount = patientInformation.patientPharmacyOrder.TotalAmount;
+                    existingPatientPharmacyOrder.ModifiedBy = patientInformation.patientPharmacyOrder.ModifiedBy;
+                    existingPatientPharmacyOrder.ModifiedOn = DateTimeOffset.UtcNow; // Set to current time
+                    existingPatientPharmacyOrder.IsActive = patientInformation.patientPharmacyOrder.IsActive;
+
+                    var existingPatientPharmacyOrderDetail = await _dbContext.pharmacyOrderDetails.Where(x => x.OrderId == existingPatientPharmacyOrder.OrderId).ToListAsync();
+
+                    if (existingPatientPharmacyOrderDetail.Any())
+                    {
+                        foreach (var pharmacyOrderDetail in existingPatientPharmacyOrderDetail)
+                        {
+                            var _pharmacyOrderDetail = patientInformation.patientPharmacyOrder.patientPharmacyOrderDetails.Where(x => x.OrderDetailId == pharmacyOrderDetail.OrderDetailId).FirstOrDefault();
+
+                            if (_pharmacyOrderDetail != null)
+                            {
+                                pharmacyOrderDetail.OrderDetailId = _pharmacyOrderDetail.OrderDetailId.Value;
+                                pharmacyOrderDetail.OrderId = _pharmacyOrderDetail.OrderId;
+                                pharmacyOrderDetail.MedicineId = _pharmacyOrderDetail.MedicineId;
+                                pharmacyOrderDetail.Quantity = _pharmacyOrderDetail.Quantity;
+                                pharmacyOrderDetail.PricePerUnit = _pharmacyOrderDetail.PricePerUnit;
+                                pharmacyOrderDetail.TotalPrice = _pharmacyOrderDetail.TotalPrice;
+                                pharmacyOrderDetail.CreatedBy = _pharmacyOrderDetail.CreatedBy;
+                                pharmacyOrderDetail.CreatedOn = _pharmacyOrderDetail.CreatedOn;
+                                pharmacyOrderDetail.ModifiedBy = _pharmacyOrderDetail.ModifiedBy;
+                                pharmacyOrderDetail.ModifiedOn = DateTimeOffset.UtcNow;
+                                pharmacyOrderDetail.IsActive = _pharmacyOrderDetail.IsActive;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        List<PharmacyOrderDetail> pharmacyOrderDetails = new List<PharmacyOrderDetail>();
+
+                        foreach (var orderDetail in patientInformation.patientPharmacyOrder.patientPharmacyOrderDetails)
+                        {
+                            pharmacyOrderDetails.Add(new PharmacyOrderDetail()
+                            {
+                                OrderDetailId = orderDetail.OrderDetailId.Value,
+                                OrderId = existingPatientPharmacyOrder.OrderId,
+                                MedicineId = orderDetail.MedicineId,
+                                Quantity = orderDetail.Quantity,
+                                PricePerUnit = orderDetail.PricePerUnit,
+                                TotalPrice = orderDetail.TotalPrice,
+                                CreatedBy = orderDetail.CreatedBy,
+                                CreatedOn = orderDetail.CreatedOn,
+                                ModifiedBy = orderDetail.ModifiedBy,
+                                ModifiedOn = DateTimeOffset.UtcNow,
+                                IsActive = orderDetail.IsActive
+                            });
+                        }
+
+                        await _dbContext.BulkInsertAsync(pharmacyOrderDetails);
+                        await _dbContext.SaveChangesAsync();
+                    }
+
+                }
+                else
+                {
+                    var patientPharmacyOrder = new PharmacyOrder
+                    {
+                        OrderId = patientInformation.patientPharmacyOrder.OrderId.Value,
+                        PatientId = patientInformation.patientPharmacyOrder.PatientId,
+                        ConsultationId = patientInformation.patientPharmacyOrder.ConsultationId,
+                        OrderDate = patientInformation.patientPharmacyOrder.OrderDate,
+                        ItemsQty = patientInformation.patientPharmacyOrder.ItemsQty,
+                        TotalAmount = patientInformation.patientPharmacyOrder.TotalAmount,
+                        CreatedBy = patientInformation.patientPharmacyOrder.CreatedBy,
+                        CreatedOn = patientInformation.patientPharmacyOrder.CreatedOn,
+                        ModifiedBy = patientInformation.patientPharmacyOrder.ModifiedBy,
+                        ModifiedOn = DateTimeOffset.UtcNow, // Set to current time
+                        IsActive = patientInformation.patientPharmacyOrder.IsActive
+                    };
+                    await _dbContext.pharmacyOrders.AddAsync(patientPharmacyOrder);
+
+                    await _dbContext.SaveChangesAsync();
+
+                    List<PharmacyOrderDetail> pharmacyOrderDetails = new List<PharmacyOrderDetail>();
+
+                    foreach (var orderDetail in patientInformation.patientPharmacyOrder.patientPharmacyOrderDetails)
+                    {
+                        pharmacyOrderDetails.Add(new PharmacyOrderDetail()
+                        {
+                            OrderDetailId = orderDetail.OrderDetailId.Value,
+                            OrderId = patientPharmacyOrder.OrderId,
+                            MedicineId = orderDetail.MedicineId,
+                            Quantity = orderDetail.Quantity,
+                            PricePerUnit = orderDetail.PricePerUnit,
+                            TotalPrice = orderDetail.TotalPrice,
+                            CreatedBy = orderDetail.CreatedBy,
+                            CreatedOn = orderDetail.CreatedOn,
+                            ModifiedBy = orderDetail.ModifiedBy,
+                            ModifiedOn = DateTimeOffset.UtcNow, // Set to current time
+                            IsActive = orderDetail.IsActive
+                        });
+                    }
+
+                    await _dbContext.BulkInsertAsync(pharmacyOrderDetails);
+
+                    await _dbContext.SaveChangesAsync();
+
+                }
+
+
+            }
+            else
+            {
+                var patientCunsultation = new MedicalConsultation()
+                {
+                    ConsultationId = Guid.NewGuid(),
+                    PatientId = patientInformation.PatientId.Value,
+                    DoctorId = patientInformation.DoctorId.Value,
+                    ConsultationDate = DateTimeOffset.UtcNow,
+                    ConsultationTime = DateTimeOffset.UtcNow.TimeOfDay,
+                    Symptoms = patientInformation.patientCunsultation.Symptoms, // Assuming you have this in patientInformation
+                    Diagnosis = patientInformation.patientCunsultation.Diagnosis, // Assuming you have this in patientInformation
+                    Remarks = patientInformation.patientCunsultation.Remarks, // Assuming you have this in patientInformation
+                    CreatedBy = patientInformation.CreatedBy,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    IsActive = true,
+                    ModifiedBy = patientInformation.ModifiedBy,
+                    ModifiedOn = patientInformation.ModifiedOn,
+                };
+                await _dbContext.medicalConsultations.AddAsync(patientCunsultation);
+
+                var patientCunsultationDetail = new ConsultationDetails()
+                {
+                    Advice = patientInformation.patientCunsultation.patientConsultationDetails.Advice,
+                    ConsultationId = patientCunsultation.ConsultationId,
+                    DetailId = patientInformation.patientCunsultation.patientConsultationDetails.DetailId.Value,
+                    FollowUpDate = patientInformation.patientCunsultation.patientConsultationDetails.FollowUpDate,
+                    Diagnosis = patientInformation.patientCunsultation.patientConsultationDetails.Diagnosis,
+                    Treatment = patientInformation.patientCunsultation.patientConsultationDetails.Treatment,
+                    CreatedBy = patientInformation.CreatedBy,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    IsActive = true,
+                    ModifiedBy = patientInformation.ModifiedBy,
+                    ModifiedOn = patientInformation.ModifiedOn,
+                };
+                await _dbContext.consultationDetails.AddAsync(patientCunsultationDetail);
+
+
+                var pharmacyOrder = new PharmacyOrder()
+                {
+                    OrderId = Guid.NewGuid(),
+                    ConsultationId = patientCunsultation.ConsultationId,
+                    PatientId = patientInformation.PatientId.Value,
+                    ItemsQty = patientInformation.patientPharmacyOrder.ItemsQty,
+                    TotalAmount = patientInformation.patientPharmacyOrder.TotalAmount,
+                    CreatedBy = patientInformation.CreatedBy,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    IsActive = true
+                };
+
+                await _dbContext.pharmacyOrders.AddAsync(pharmacyOrder);
+
+                var pharmacyOrderDetails = new List<PharmacyOrderDetail>();
+
+                foreach (var orderDetail in patientInformation.patientPharmacyOrder.patientPharmacyOrderDetails)
+                {
+                    pharmacyOrderDetails.Add(new PharmacyOrderDetail()
+                    {
+                        OrderDetailId = Guid.NewGuid(),
+                        OrderId = pharmacyOrder.OrderId,
+                        MedicineId = orderDetail.MedicineId,
+                        Quantity = orderDetail.Quantity,
+                        PricePerUnit = orderDetail.PricePerUnit,
+                        TotalPrice = orderDetail.TotalPrice,
+                        CreatedBy = orderDetail.CreatedBy,
+                        CreatedOn = DateTimeOffset.UtcNow,
+                        ModifiedBy = orderDetail.ModifiedBy,
+                        ModifiedOn = DateTimeOffset.UtcNow,
+                        IsActive = orderDetail.IsActive
+                    });
+                }
+                await _dbContext.BulkInsertAsync(pharmacyOrderDetails);
+
+
+                var labOrder = new LabOrder()
+                {
+                    ConsultationId = patientCunsultation.ConsultationId,
+                    LabOrderId = Guid.NewGuid(),
+                    OrderDate = DateTimeOffset.UtcNow,
+                    PatientId = patientCunsultation.PatientId,
+                    TotalAmount = patientInformation.patientLabOrder.TotalAmount,
+                    CreatedBy = patientInformation.CreatedBy,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    IsActive = true,
+                    ModifiedBy = patientInformation.ModifiedBy,
+                    ModifiedOn = DateTimeOffset.UtcNow,
+                };
+                await _dbContext.labOrders.AddAsync(labOrder);
+
+                var laborderDetail = new List<LabOrderDetail>();
+
+                foreach (var patientLabOrderDetail in patientInformation.patientLabOrder.patientLabOrderDetails)
+                {
+                    laborderDetail.Add(new LabOrderDetail()
+                    {
+                        LabOrderDetailId = Guid.NewGuid(),
+                        LabOrderId = labOrder.LabOrderId,
+                        Quantity = patientLabOrderDetail.Quantity,
+                        PricePerUnit = patientLabOrderDetail.PricePerUnit,
+                        TestId = patientLabOrderDetail.TestId,
+                        TotalPrice = patientLabOrderDetail.TotalPrice,
+                        ModifiedBy = patientLabOrderDetail.ModifiedBy,
+                        CreatedBy = patientLabOrderDetail.CreatedBy,
+                        ModifiedOn = DateTimeOffset.UtcNow,
+                        CreatedOn = DateTimeOffset.UtcNow
+                    });
+                }
+
+                await _dbContext.BulkInsertAsync(laborderDetail);
+
+                await _dbContext.SaveChangesAsync();
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return patientInformation;
         }
     }
 }

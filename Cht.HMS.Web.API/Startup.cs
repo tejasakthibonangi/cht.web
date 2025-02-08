@@ -82,6 +82,9 @@ namespace Cht.HMS.Web.API
             services.AddScoped<IAuthenticationManager, AuthenticationDataManager>();
             services.AddScoped<IUserManager, UserDataManager>();
             services.AddScoped<IPatientManager, PatientDataManager>();
+            services.AddScoped<IPharmacyOrderManager, PharmacyOrderDataManager>();
+            services.AddScoped<ILabOrderManager, LabOrderDataManager>();
+
             var tokenKey = _configuration.GetValue<string>("tokenKey");
 
             /*services.AddScoped<IAuthenticationManager>(x=> new AuthenticationDataManager(tokenKey,x.GetRequiredServicere))*/

@@ -124,6 +124,8 @@
                 existingMedicine.Total = existingMedicine.PricePerUnit * existingMedicine.Qty;
             } else {
                 var patientMedicine = {
+                    OrderDetailId: null,
+                    OrderId: null,
                     MedicineId: medicine.MedicineId,
                     MedicineName: medicine.MedicineName,
                     GenericName: medicine.GenericName,
@@ -213,6 +215,7 @@
                 Symptoms: symptoms,
                 Remarks: symptoms
             };
+
             var medicalConsultation = addCommonProperties(medicalConsultationData);
 
             var consultationDetailData = {
@@ -226,7 +229,100 @@
 
             var consultationDetails = addCommonProperties(consultationDetailData);
 
-            console.log(patient);
+            medicalConsultation.patientConsultationDetails = consultationDetails;
+
+            //prepare pharmacy data 
+
+            // Assuming self.PatientMedicines is already populated
+            var patientPharmacyOrder = new PatientPharmacyOrder();
+
+            // Calculate total quantity and total amount
+            var totalQty = 0;
+            var totalAmount = 0;
+
+            self.PatientMedicines.forEach(function (medicine) {
+                totalQty += medicine.Qty; // Sum up the quantities
+                totalAmount += medicine.Total; // Sum up the total amounts
+            });
+
+            // Populate the PatientPharmacyOrder object
+            patientPharmacyOrder.OrderId = null; // Set this to the appropriate value if available
+            patientPharmacyOrder.PatientId = self.patientId; // Assuming you have this value
+            patientPharmacyOrder.ConsultationId = self.consultationId; // Assuming you have this value
+            patientPharmacyOrder.OrderDate = new Date(); // Set to current date/time
+            patientPharmacyOrder.ItemsQty = totalQty; // Total quantity of items
+            patientPharmacyOrder.TotalAmount = totalAmount; // Total amount of the order
+            patientPharmacyOrder.CreatedBy = self.ApplicationUser.Id; // Assuming you have this value
+            patientPharmacyOrder.CreatedOn = new Date(); // Set to current date/time
+            patientPharmacyOrder.ModifiedBy = self.ApplicationUser.Id; // Set this if applicable
+            patientPharmacyOrder.ModifiedOn = null; // Set this if applicable
+            patientPharmacyOrder.IsActive = true; // Set to true or based on your logic
+            patientPharmacyOrder.patientPharmacyOrderDetails = self.PatientMedicines.map(function (medicine) {
+                return {
+                    OrderDetailId: null, // Set this to the appropriate value if available
+                    OrderId: patientPharmacyOrder.OrderId, // Link to the order
+                    MedicineId: medicine.MedicineId,
+                    MedicineName: medicine.MedicineName,
+                    GenericName: medicine.GenericName,
+                    DosageForm: medicine.DosageForm,
+                    Manufacturer: medicine.Manufacturer,
+                    PricePerUnit: medicine.PricePerUnit,
+                    Qty: medicine.Qty,
+                    Total: medicine.Total,
+                    CreatedBy: self.ApplicationUser.Id, // Assuming you have this value
+                    CreatedOn: new Date(), // Set to current date/time
+                    ModifiedBy: self.ApplicationUser.Id, // Set this if applicable
+                    ModifiedOn: new Date() // Set this if applicable
+                };
+            });
+
+            // Now create the PatientLabOrder object
+            var patientLabOrder = new PatientLabOrder();
+
+            // Calculate total amount and prepare details
+            var totalAmount = 0;
+
+            self.PatientLabTests.forEach(function (test) {
+                totalAmount += test.Total; // Sum up the total amounts
+            });
+
+            // Populate the PatientLabOrder object9
+            patientLabOrder.LabOrderId = null; // Set this to the appropriate value if available
+            patientLabOrder.PatientId = self.patientId; // Assuming you have this value
+            patientLabOrder.ConsultationId = self.consultationId; // Assuming you have this value
+            patientLabOrder.OrderDate = new Date(); // Set to current date/time
+            patientLabOrder.TotalAmount = totalAmount; // Total amount of the order
+            patientLabOrder.CreatedBy = self.ApplicationUser.Id; // Assuming you have this value
+            patientLabOrder.CreatedOn = new Date(); // Set to current date/time
+            patientLabOrder.ModifiedBy = self.ApplicationUser.Id; // Set this if applicable
+            patientLabOrder.ModifiedOn = new Date(); // Set this if applicable
+            patientLabOrder.IsActive = true; // Set to true or based on your logic
+            patientLabOrder.patientLabOrderDetails = self.PatientLabTests.map(function (test) {
+                return {
+                    LabOrderDetailId: null, // Set this to the appropriate value if available
+                    LabOrderId: patientLabOrder.LabOrderId, // Link to the order
+                    TestId: test.TestId,
+                    Quantity: test.Qty,
+                    PricePerUnit: test.Price,
+                    TotalPrice: test.Total,
+                    CreatedBy: self.ApplicationUser.Id, // Assuming you have this value
+                    CreatedOn: new Date(), // Set to current date/time
+                    ModifiedBy: self.ApplicationUser.Id, // Set this if applicable
+                    ModifiedOn: new Date() // Set this if applicable
+                };
+            });
+
+            // Now you can use patientLabOrder as needed
+            console.log(patientLabOrder);
+            
+
+            var _patientInformation = self.PatientInfirmation;
+            _patientInformation.patientCunsultation = medicalConsultation;
+            _patientInformation.patientPharmacyOrder = patientPharmacyOrder;
+            _patientInformation.patientLabOrder = patientLabOrder;
+
+            console.log(_patientInformation);
+
         });
     };
 }

@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cht.HMS.Web.UI.Models
+{
+    public class PharmacyOrder
+    {
+        public Guid? OrderId { get; set; }
+        public Guid? PatientId { get; set; }
+        public Guid? ConsultationId { get; set; }
+        public DateTimeOffset OrderDate { get; set; }
+        public int ItemsQty { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

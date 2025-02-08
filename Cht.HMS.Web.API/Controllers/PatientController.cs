@@ -1,5 +1,6 @@
 ﻿using Cht.HMS.Web.API.Manager;
 using Cht.HMS.Web.API.Models;
+using Cht.HMS.Web.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -100,6 +101,23 @@ namespace Cht.HMS.Web.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpPost]
+        [Route("UpsertPatientConsultationDetailsAsync")]
+        public async Task<IActionResult> UpsertPatientConsultationDetailsAsync(PatientInformation patientInformation)
+        {
+            try
+            {
+                // Calling the service method to insert or update the patient registration
+                var response = await _patientManager.UpsertPatientConsultationDetailsAsync(patientInformation);
 
+                // Returning a successful response with the inserted or updated patient registration data
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                // Returning an internal server error with the exception message
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
