@@ -2,31 +2,32 @@
 {
     public class PatientRegistration
     {
-        public Guid? PatientId { get; set; }  // Nullable Guid
-        public DateTime? DateOfVisit { get; set; }  // Nullable DateTime
-        public TimeSpan? TimeOfVisit { get; set; }  // Nullable TimeSpan
-        public string ComingFrom { get; set; }  // Nullable string
-        public string Reference { get; set; }  // Nullable string
-        public string PatientName { get; set; }  // Nullable string
-        public string PhoneNo { get; set; }  // Nullable string
-        public string AlternatePhoneNo { get; set; }  // Nullable string
-        public string Email { get; set; }  // Nullable string
-        public string Gender { get; set; }  // Nullable string
-        public DateTime? DOB { get; set; }  // Nullable DateTime
-        public float? Height { get; set; }  // Nullable float
-        public float? Weight { get; set; }  // Nullable float
-        public string BP { get; set; }  // Nullable string
-        public float? Sugar { get; set; }  // Nullable float
-        public float? Temperature { get; set; }  // Nullable float
-        public string HealthIssues { get; set; }  // Nullable string
-        public Guid? DoctorAssignedId { get; set; }  // Nullable Guid
-        public decimal? Fee { get; set; }  // Nullable decimal
-        public string PreparedBy { get; set; }  // Nullable string
-        public Guid? CreatedBy { get; set; }  // Nullable Guid
-        public DateTimeOffset? CreatedOn { get; set; }  // Nullable DateTimeOffset
-        public Guid? ModifiedBy { get; set; }  // Nullable Guid
-        public DateTimeOffset? ModifiedOn { get; set; }  // Nullable DateTimeOffset
-        public bool? IsActive { get; set; } = true;  // Nullable boolean (with default value)
+        public Guid? PatientId { get; set; }
+        public DateTime? DateOfVisit { get; set; }
+        public TimeSpan? TimeOfVisit { get; set; }
+        public string? ComingFrom { get; set; }
+        public string? Reference { get; set; }
+        public string? PatientName { get; set; }
+        public string? PhoneNo { get; set; }
+        public string? AlternatePhoneNo { get; set; }
+        public string? Email { get; set; }
+        public string? Gender { get; set; }
+        public DateTime? DOB { get; set; }
+        public decimal? Height { get; set; }
+        public decimal? Weight { get; set; }
+        public string? BP { get; set; }
+        public decimal? Sugar { get; set; }
+        public decimal? Temperature { get; set; }
+        public string? HealthIssues { get; set; }
+        public Guid? DoctorAssignedId { get; set; }
+        public decimal? Fee { get; set; }
+        public string? PreparedBy { get; set; }
+        public string? CurrentStatus { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
+        public Guid? ModifiedBy { get; set; }
+        public DateTimeOffset? ModifiedOn { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 
 }

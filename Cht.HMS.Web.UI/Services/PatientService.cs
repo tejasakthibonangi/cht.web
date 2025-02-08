@@ -1,6 +1,7 @@
 ﻿using Cht.HMS.Web.UI.Factory;
 using Cht.HMS.Web.UI.Interfaces;
 using Cht.HMS.Web.UI.Models;
+using Cht.HMS.Web.Utility;
 
 namespace Cht.HMS.Web.UI.Services
 {
@@ -12,9 +13,22 @@ namespace Cht.HMS.Web.UI.Services
         {
             _repository = repository;
         }
-        public async Task<List<PatientRegistration>> GetPatientRegistrationsAsync()
+
+        public async Task<List<PatientRegistration>> GetPatientByDoctorAsync(Guid doctorId)
         {
-            return await _repository.SendAsync<List<PatientRegistration>>(HttpMethod.Get, "Patient/GetPatientRegistrationsAsync");
+            var uri = Path.Combine("Patient/GetPatientByDoctorAsync", doctorId.ToString());
+            return await _repository.SendAsync<List<PatientRegistration>>(HttpMethod.Get, uri);
+        }
+
+        public async Task<PatientInformation> GetPatientDetailsAsync(Guid patientId)
+        {
+            var uri = Path.Combine("Patient/GetPatientDetailsAsync", patientId.ToString());
+            return await _repository.SendAsync<PatientInformation>(HttpMethod.Get, uri);
+        }
+
+        public async Task<List<PatientInformation>> GetPatientRegistrationsAsync()
+        {
+            return await _repository.SendAsync<List<PatientInformation>>(HttpMethod.Get, "Patient/GetPatientRegistrationsAsync");
         }
 
         public async Task<List<PatientRegistration>> GetPatientRegistrationsAsync(string inputString)

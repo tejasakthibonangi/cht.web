@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Doctor Area";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<form id="AddEditDoctorConsutationForm">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row border-bottom pb-2 mb-2">
+                        <div class="col-6">
+                            <strong>Patient Name:</strong> <span id="patientName"></span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <strong>Doctor Name:</strong> <span id="doctorName"></span>
+                        </div>
+                    </div>
+                    <div class="row border-bottom pb-2 mb-2">
+                        <div class="col-6">
+                            <strong>Patient Phone:</strong> <span id="patientPhone"></span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <strong>Doctor Phone:</strong> <span id="doctorPhone"></span>
+                        </div>
+                    </div>
+                    <div class="row border-bottom pb-2 mb-2">
+                        <div class="col-3">
+                            <strong>BP:</strong> <span id="bp"></span>
+                        </div>
+                        <div class="col-3">
+                            <strong>Sugar:</strong> <span id="sugar"></span>
+                        </div>
+                        <div class="col-3 text-right">
+                            <strong>Temperature:</strong> <span id="temperature"></span>
+                        </div>
+                        <div class="col-3 text-right">
+                            <strong>Height/Weight:</strong> <span id="heightWeight"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <strong>Health Issues:</strong> <span id="healthIssues"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body card-body-padding">
+                    <div class="row">
+                         <div class="form-group col-6">
+                            <label for="treatment">Symptoms:</label>
+                            <textarea class="form-control" id="Symptoms" rows="10" placeholder="Enter Symptoms details here..."></textarea>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="diagnosis">Diagnosis:</label>
+                            <textarea class="form-control" id="Diagnosis" rows="10" placeholder="Enter diagnosis details here..."></textarea>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="treatment">Treatment:</label>
+                            <textarea class="form-control" id="Treatment" rows="10" placeholder="Enter treatment details here..."></textarea>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="advice">Advice:</label>
+                            <textarea class="form-control" id="Advice" rows="5" placeholder="Enter advice here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa  fa-user-clock"></i></span>
+                                    </div>
+                                    <select id="medicineDropdown" class="form-control custom-select" autofocus required></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" id="addMedicine" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Medicine</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Medicine Name</th>
+                                        <th scope="col">Dosage Form</th>
+                                        <th scope="col">Price/Unit</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="PatientMedicinesGrid">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa  fa-user-clock"></i></span>
+                                    </div>
+                                    <select id="labTestDropdown" class="form-control custom-select" autofocus required></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" id="addLabTest" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Lab Tests</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Test Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="PatientLabTestsGrid">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="FollowUpDate">Follow-Up Date:</label>
+                            <input type="date" class="form-control" id="FollowUpDate">
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" id="btnBack" class="btn btn-info btn-lg float-left">Back</button>
+                        <button type="submit" id="btnsubmit" class="btn btn-primary btn-lg float-right" form="AddEditDoctorConsutationForm">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div
+</form>
+<style>
+    .card-header {
+        white-space: nowrap; /* Prevent text from wrapping */
+        overflow: hidden; /* Hide overflow */
+        text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    }
+
+    .card-header {
+        border: 1px solid #dee2e6; /* Optional: Add border around the header */
+    }
+
+        .card-header .row {
+            padding: 10px 0; /* Optional: Add padding to each row */
+        }
+</style>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/DoctorConsutationController.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var ctrl = new DoctorConsutationController();
+        ctrl.init();
+    });
+</script>

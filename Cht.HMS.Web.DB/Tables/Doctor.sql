@@ -5,6 +5,7 @@
     [Specialty]              VARCHAR(100)       NULL,
     [Phone]                  VARCHAR(15)        NULL,
     [Email]                  VARCHAR(100)       NULL,
+    [UserId]                 UNIQUEIDENTIFIER   NULL,
     [CreatedBy]              UNIQUEIDENTIFIER   NULL,
     [CreatedOn]              DATETIMEOFFSET     DEFAULT SYSDATETIMEOFFSET(),
     [ModifiedBy]             UNIQUEIDENTIFIER   NULL,

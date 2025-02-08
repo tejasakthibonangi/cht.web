@@ -35,6 +35,34 @@ namespace Cht.HMS.Web.UI.Controllers
                 throw ex;
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPatientDetails(string patientId)
+        {
+            try
+            {
+                var response = await _patientService.GetPatientDetailsAsync(Guid.Parse(patientId));
+                return Json(new { data = response });
+            }
+            catch (Exception ex)
+            {
+                _notyfService.Error(ex.Message);
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPatientsByDoctor(string doctorId)
+        {
+            try
+            {
+                var response = await _patientService.GetPatientByDoctorAsync(Guid.Parse(doctorId));
+                return Json(new { data = response });
+            }
+            catch (Exception ex)
+            {
+                _notyfService.Error(ex.Message);
+                throw ex;
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> InsertOrUpdatePatientRegistration([FromBody] PatientRegistration registration)
         {

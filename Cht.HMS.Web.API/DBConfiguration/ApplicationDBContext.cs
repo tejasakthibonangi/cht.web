@@ -32,6 +32,10 @@ namespace Cht.HMS.Web.API.DBConfiguration
         public DbSet<Pharmacy> pharmacys { get; set; }
         public DbSet<Prescription> prescriptions { get; set; }
         public DbSet<Radiology> radiologies { get; set; }
+        public DbSet<LabOrder> labOrders { get; set; }
+        public DbSet<LabOrderDetail> labOrderDetails { get; set; }
+        public DbSet<PharmacyOrder> pharmacyOrders { get; set; }
+        public DbSet<PharmacyOrderDetail> pharmacyOrderDetails { get; set; }
 
     }
 }

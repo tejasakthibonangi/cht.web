@@ -8,5 +8,11 @@ namespace Cht.HMS.Web.UI.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> DoctorConsutation(Guid patientId)
+        {
+            return View("~/Views/Doctor/DoctorConsutation.cshtml");
+        }
     }
 }

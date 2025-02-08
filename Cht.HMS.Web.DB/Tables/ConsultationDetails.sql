@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[ConsultationDetails]
 (
     [DetailId]             UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-    [ConsultationId]       UNIQUEIDENTIFIER NOT NULL,
+    [ConsultationId]       UNIQUEIDENTIFIER   NULL,
     [Diagnosis]            VARCHAR(500)       NULL,
     [Treatment]            VARCHAR(500)       NULL,
     [Advice]               VARCHAR(500)       NULL,

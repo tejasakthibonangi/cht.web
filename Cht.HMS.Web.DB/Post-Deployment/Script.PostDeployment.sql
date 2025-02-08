@@ -26,3 +26,9 @@ Post-Deployment Script Template
 
 -- Include seed data for SeedPaymentType
 :r .\SeedPaymentType.sql
+
+-- Include seed data for SeedUpdateDoctorIntoUser
+:r .\SeedUpdateDoctorIntoUser.sql
+
+-- Include seed data for SeedPaymentType
+:r .\SeedUpdatePasswordForDoctors.sql

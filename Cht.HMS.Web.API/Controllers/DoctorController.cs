@@ -12,10 +12,16 @@ namespace Cht.HMS.Web.API.Controllers
     {
         private readonly IDoctorManager _doctorManager;
 
-        public DoctorController(IDoctorManager doctorManager)
+
+        private readonly IPatientManager _patientManager;
+
+        public DoctorController(IDoctorManager doctorManager,
+            IPatientManager patientManager)
         {
             _doctorManager = doctorManager;
+            _patientManager = patientManager;
         }
+
 
         [HttpGet]
         [Route("GetDoctorByIdAsync/{doctorId}")]
@@ -32,6 +38,7 @@ namespace Cht.HMS.Web.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
 
         [HttpGet]
         [Route("GetDoctorsAsync")]

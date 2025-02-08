@@ -35,6 +35,12 @@ namespace Cht.HMS.Web.UI.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DoctorConsutation(Guid patientId)
+        {
+            return View();
+        }
+
         // POST: Doctor/InsertOrUpdate
         [HttpPost]
         public async Task<IActionResult> InsertOrUpdateDoctor([FromBody] Doctor doctor)
