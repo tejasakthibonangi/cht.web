@@ -59,6 +59,7 @@
     <Folder Include="Post-Deployment" />
     <Folder Include="Pre-Deployment" />
     <Folder Include="Tables" />
+    <Folder Include="Backups" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Role.sql" />
@@ -76,6 +77,10 @@
     <Build Include="Tables\Pharmacy.sql" />
     <Build Include="Tables\Radiology.sql" />
     <Build Include="Tables\User.sql" />
+    <Build Include="Tables\PharmacyOrder.sql" />
+    <Build Include="Tables\PharmacyOrderDetail.sql" />
+    <Build Include="Tables\LabOrder.sql" />
+    <Build Include="Tables\LabOrderDetail.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Post-Deployment\Script.PostDeployment.sql" />
@@ -85,5 +90,7 @@
     <None Include="Post-Deployment\SeedLabTests.sql" />
     <None Include="Post-Deployment\SeedMedicines.sql" />
     <None Include="Post-Deployment\SeedDoctor.sql" />
+    <None Include="Post-Deployment\SeedUpdateDoctorIntoUser.sql" />
+    <None Include="Post-Deployment\SeedUpdatePasswordForDoctors.sql" />
   </ItemGroup>
 </Project>

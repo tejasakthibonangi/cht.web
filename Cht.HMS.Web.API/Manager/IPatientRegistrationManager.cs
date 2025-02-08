@@ -6,6 +6,7 @@ namespace Cht.HMS.Web.API.Manager
     {
         Task<PatientRegistration> InsertOrUpdatePatientRegistrationAsync(PatientRegistration patientRegistration);
         Task<PatientRegistration> GetPatientRegistrationByIdAsync(Guid PatientId);
+        Task<PatientRegistration> GetPatientRegistrationByPhoneAsync(string phone);
         Task<List<PatientRegistration>> GetPatientRegistrationsAsync();
     }
 }

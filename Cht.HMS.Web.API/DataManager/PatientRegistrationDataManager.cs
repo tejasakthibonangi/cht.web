@@ -5,7 +5,13 @@ namespace Cht.HMS.Web.API.DataManager
 {
     public class PatientRegistrationDataManager : IPatientRegistrationManager
     {
+
         public Task<PatientRegistration> GetPatientRegistrationByIdAsync(Guid PatientId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PatientRegistration> GetPatientRegistrationByPhoneAsync(string phone)
         {
             throw new NotImplementedException();
         }

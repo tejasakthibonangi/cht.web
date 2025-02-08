@@ -1,90 +1,40 @@
 ﻿function DoctorDashboardController() {
     var self = this;
     self.selectedRows = [];
-    self.currectSelectedTenant = {};
+    self.currectSelectedPatient = {};
     self.todayDate = new Date();
     self.fileUploadModal = $("#fileUploadModal");
-    self.ImportedTenants = [];
+    self.coreDBDocters = [];
+    var actions = [];
+    var dataObjects = [];
+    self.ApplicationUser = {};
+
+    actions.push('/Doctor/GetDoctors');
     self.init = function () {
+
+        var appUserInfo = storageService.get('ApplicationUser');
+        if (appUserInfo) {
+            self.ApplicationUser = appUserInfo;
+        }
+
         var table = new Tabulator("#consulationGrid", {
-            height: "600px",
+            height: "780px",
             layout: "fitColumns",
             resizableColumnFit: true,
-            data: [
-                {
-                    "TenantId": 1,
-                    "TenantName": "Tenant A",
-                    "TenantCode": "TNA001",
-                    "Logo": "logoA.png",
-                    "TenantWebsite": "https://tenantA.com",
-                    "Location": "Location A",
-                    "Address": "123 A Street, City A",
-                    "ContactName": "John Doe",
-                    "ContactPhone": "+1234567890",
-                    "Products": "Product A, Product B",
-                    "Makes": "Make A, Make B",
-                    "DealerCount": 100
+            ajaxURL: '/Patient/GetPatientsByDoctor',
+            ajaxParams: { doctorId: self.ApplicationUser.Id },
+            ajaxConfig: {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                {
-                    "TenantId": 2,
-                    "TenantName": "Tenant B",
-                    "TenantCode": "TNB002",
-                    "Logo": "logoB.png",
-                    "TenantWebsite": "https://tenantB.com",
-                    "Location": "Location B",
-                    "Address": "456 B Avenue, City B",
-                    "ContactName": "Jane Smith",
-                    "ContactPhone": "+0987654321",
-                    "Products": "Product C, Product D",
-                    "Makes": "Make C, Make D",
-                    "DealerCount": 150
-                },
-                {
-                    "TenantId": 3,
-                    "TenantName": "Tenant C",
-                    "TenantCode": "TNC003",
-                    "Logo": "logoC.png",
-                    "TenantWebsite": "https://tenantC.com",
-                    "Location": "Location C",
-                    "Address": "789 C Blvd, City C",
-                    "ContactName": "Alice Johnson",
-                    "ContactPhone": "+1122334455",
-                    "Products": "Product E, Product F",
-                    "Makes": "Make E, Make F",
-                    "DealerCount": 200
-                },
-                {
-                    "TenantId": 4,
-                    "TenantName": "Tenant D",
-                    "TenantCode": "TND004",
-                    "Logo": "logoD.png",
-                    "TenantWebsite": "https://tenantD.com",
-                    "Location": "Location D",
-                    "Address": "1010 D Road, City D",
-                    "ContactName": "Bob Brown",
-                    "ContactPhone": "+6677889900",
-                    "Products": "Product G, Product H",
-                    "Makes": "Make G, Make H",
-                    "DealerCount": 250
-                },
-                {
-                    "TenantId": 5,
-                    "TenantName": "Tenant E",
-                    "TenantCode": "TNE005",
-                    "Logo": "logoE.png",
-                    "TenantWebsite": "https://tenantE.com",
-                    "Location": "Location E",
-                    "Address": "2020 E Parkway, City E",
-                    "ContactName": "Charlie Green",
-                    "ContactPhone": "+2233445566",
-                    "Products": "Product I, Product J",
-                    "Makes": "Make I, Make J",
-                    "DealerCount": 300
-                }
-            ],
+            },
+            ajaxResponse: function (url, params, response) {
+                return response.data;
+            },
             columns: [
                 {
-                    title: "<div class='centered-checkbox'><input type='checkbox' id='parentTenantChkbox' style='margin-top: 22px;'></div>",
+                    title: "<div class='centered-checkbox'><input type='checkbox' id='parentPatientChkbox' style='margin-top: 22px;'></div>",
                     field: "select",
                     headerSort: false,
                     hozAlign: "center",
@@ -94,8 +44,8 @@
                     formatter: function (cell, formatterParams, onRendered) {
                         onRendered(function () {
                             var row = cell.getRow();
-                            var rowId = row.getData().TenantId;
-                            cell.getElement().innerHTML = `<div class='centered-checkbox'><input type='checkbox' id='childTenantChkbox-${rowId}' class='childTenantChkbox' data-row-id='${rowId}'/></div>`;
+                            var rowId = row.getData().PatientId;
+                            cell.getElement().innerHTML = `<div class='centered-checkbox'><input type='checkbox' id='childPatientChkbox-${rowId}' class='childPatientChkbox' data-row-id='${rowId}'/></div>`;
                             cell.getElement().querySelector('input[type="checkbox"]').checked = row.isSelected();
                         });
                         return "";
@@ -104,39 +54,61 @@
                         cell.getRow().toggleSelect();
                     }
                 },
-                { title: "Name", field: "TenantName" },
-                { title: "Code", field: "TenantCode" },
-                { title: "Logo", field: "Logo" },
-                { title: "Website", field: "TenantWebsite" },
-                { title: "Location", field: "Location" },
-                { title: "Address", field: "Address" },
-                { title: "Contact Name", field: "ContactName" },
-                { title: "Contact Phone", field: "ContactPhone" },
-                { title: "Products", field: "Products" },
-                { title: "Makes", field: "Makes" },
-                { title: "Dealer Count", field: "DealerCount" },
+                { title: "Name", field: "PatientName" },
+                { title: "Date of Visit", field: "DateOfVisit" },
+                { title: "Time of Visit", field: "TimeOfVisit" },
+                { title: "Coming From", field: "ComingFrom" },
+                { title: "Phone Number", field: "PhoneNo" },
+                { title: "Gender", field: "Gender" },
+                {
+                    title: "Vitals",
+                    field: "Height",
+                    formatter: function (cell, formatterParams, onRendered) {
+                        var rowData = cell.getRow().getData();
+
+                        var vitals = [
+                            `Height: ${rowData.Height || "N/A"}`,
+                            `Weight: ${rowData.Weight || "N/A"}`,
+                            `BP: ${rowData.BP || "N/A"}`,
+                            `Sugar: ${rowData.Sugar || "N/A"}`,
+                            `Temperature: ${rowData.Temperature || "N/A"}`
+                        ].join("<br>");
+                        return vitals;
+                    },
+                },
+                { title: "Doctor", field: "DoctorName" },
+                { title: "Fee", field: "Fee" },
+                { title: "Current Status", field: "CurrentStatus" },
                 {
                     title: "Options",
-                    field: "TenantId",
+                    field: "PatientId",
                     headerSort: false,
                     hozAlign: "center",
                     headerHozAlign: "center",
                     cssClass: "centered-checkbox",
-                    width: 30,
+                    width: 150, // Adjust width as needed
                     formatter: function (cell, formatterParams, onRendered) {
                         onRendered(function () {
                             var row = cell.getRow();
-                            var rowId = row.getData().TenantId;
-                            cell.getElement().innerHTML = `<span target="_blank" data-tentnatid='${rowId}' class="genarateTenantAggriment"><i class="fa-solid fa-file-pdf"></i></span>`;
+                            var rowId = row.getData().PatientId;
+                            cell.getElement().innerHTML = `
+                        <button class="consultation-button btn btn-primary" data-patientid='${rowId}'>
+                            Consultation
+                        </button>`;
                         });
                         return "";
                     },
+                    cellClick: function (e, cell) {
+                        var patientId = cell.getRow().getData().PatientId;
+                        // Handle the consultation button click event
+                        console.log("Consultation button clicked for Patient ID:", patientId);
+                        // You can add your logic here to handle the consultation action
+                    }
                 }
-
             ],
             rowSelectionChanged: function (data, rows) {
                 var allSelected = rows.length && rows.every(row => row.isSelected());
-                $('#parentTenantChkbox').prop('checked', allSelected);
+                $('#parentPatientChkbox').prop('checked', allSelected);
                 disableAllButtons();
 
                 // Enable buttons based on selection
@@ -162,16 +134,16 @@
                 // Handle the changed row data
                 if (changedRow) {
                     var rows = table.getRows();
-                    var foundRow = rows.find(row => row.getData().TenantId === changedRow.TenantId);
+                    var foundRow = rows.find(row => row.getData().PatientId === changedRow.PatientId);
 
                     if (foundRow) {
-                        var rowId = foundRow.getData().TenantId;
-                        var checkbox = document.querySelector(`#childTenantChkbox-${rowId}`);
+                        var rowId = foundRow.getData().PatientId;
+                        var checkbox = document.querySelector(`#childPatientChkbox-${rowId}`);
                         if (checkbox.checked && currentSelectedRows.length === 1) {
-                            self.currectSelectedTenant = changedRow;
+                            self.currectSelectedPatient = changedRow;
                         }
                         else {
-                            self.currectSelectedTenant = {};
+                            self.currectSelectedPatient = {};
                         }
                     }
 
@@ -180,27 +152,53 @@
 
             }
         });
-        $(document).on("change", "#parentTenantChkbox", function () {
+
+        var requests = actions.map((action, index) => {
+            var ajaxConfig = {
+                url: action,
+                method: 'GET'
+            };
+            return $.ajax(ajaxConfig);
+        });
+
+        $.when.apply($, requests).done(function (...responses) {
+            self.coreDBDocters = responses[0]?.data || [];
+
+            if (self.coreDBDocters) {
+                var doctorPhoneList = self.coreDBDocters.map(function (doctor) {
+                    return {
+                        DoctorId: doctor.DoctorId,
+                        DoctorName: doctor.DoctorName + "-" + doctor.Specialty + "-" + doctor.Phone
+                    };
+                });
+                genarateDropdown("DoctorAssignedId", doctorPhoneList, "DoctorId", "DoctorName");
+            }
+
+            hideLoader();
+        }).fail(function () {
+            console.log('One or more requests failed.');
+        });
+        $(document).on("change", "#parentPatientChkbox", function () {
             var isChecked = $(this).prop('checked');
             if (isChecked) {
                 table.selectRow();
             } else {
                 table.deselectRow();
             }
-            $('.childTenantChkbox').prop('checked', isChecked);
+            $('.childPatientChkbox').prop('checked', isChecked);
         });
 
-        $(document).on('change', '.childTenantChkbox', function () {
+        $(document).on('change', '.childPatientChkbox', function () {
             var rowId = $(this).data('row-id');
             var row = table.getRow(function (data) {
                 return data.id === rowId;
             });
             var rows = table.getRows();
             var allSelected = rows.length && rows.every(row => row.isSelected());
-            $('#parentTenantChkbox').prop('checked', allSelected);
+            $('#parentPatientChkbox').prop('checked', allSelected);
         });
 
-      
+
         $('#addBtn').on('click', function () {
             $('#sidebar').addClass('show');
             $('body').append('<div class="modal-backdrop fade show"></div>');
@@ -215,12 +213,13 @@
         $('#AddEditConsulationForm').on('submit', function (e) {
             e.preventDefault();
             var formData = getFormData('#AddEditConsulationForm');
-            var tenant = addCommonProperties(formData);
-            tenant.TenantId = self.currectSelectedTenant ? self.currectSelectedTenant.TenantId : null;
-            tenant.DealerCount = 0;
-            tenant.Makes = "";
-            tenant.Products = "";
-            self.addedittenant(tenant, false);
+            var patient = addCommonProperties(formData);
+            patient.PatientId = self.currectSelectedPatient ? self.currectSelectedPatient.PatientId : null;
+            patient.CurrentStatus = self.currectSelectedPatient.CurrentStatus ? self.currectSelectedPatient.CurrentStatus : "Patiend Registered";
+            patient.PreparedBy = patient.ModifiedBy;
+            self.addEditPatient(patient, false);
+
+            console.log(patient);
         });
 
         makeFormGeneric('#AddEditConsulationForm', '#btnsubmit');
@@ -263,46 +262,77 @@
             }
         }
 
+        $(document).on("click", ".consultation-button", function () {
+            var rowId = $(this).data('patientid');
+
+            var row = $.grep(table.getData(), function (data) {
+                return data.PatientId === rowId;
+            });
+
+            console.log(row[0]);
+
+            var patient = row[0];
+
+            var managerPatientUrl = "/DoctorDashboard/DoctorConsutation?patientId=" + patient.PatientId;
+
+            window.location.href = managerPatientUrl;
+        });
+
         $(document).on("click", "#editBtn", function () {
-            if (self.currectSelectedTenant) {
-                $("#TenantName").val(self.currectSelectedTenant.TenantName);
-                $("#TenantCode").val(self.currectSelectedTenant.TenantCode);
-                $("#Logo").val(self.currectSelectedTenant.Logo);
-                $("#TenantWebsite").val(self.currectSelectedTenant.TenantWebsite);
-                $("#Address").val(self.currectSelectedTenant.Address);
-                $("#Location").val(self.currectSelectedTenant.Location);
-                $("#ContactName").val(self.currectSelectedTenant.ContactName);
-                $("#ContactPhone").val(self.currectSelectedTenant.ContactPhone);
+            if (self.currectSelectedPatient) {
+                // Populate the form fields with data from the selected patient
+                $("#PatientName").val(self.currectSelectedPatient.PatientName);
+                $("#DateOfVisit").val(self.currectSelectedPatient.DateOfVisit ? self.currectSelectedPatient.DateOfVisit.split('T')[0] : '');  // Date formatting for input[type="date"]
+                $("#TimeOfVisit").val(self.currectSelectedPatient.TimeOfVisit);
+                $("#ComingFrom").val(self.currectSelectedPatient.ComingFrom);
+                $("#Reference").val(self.currectSelectedPatient.Reference);
+                $("#PhoneNo").val(self.currectSelectedPatient.PhoneNo);
+                $("#AlternatePhoneNo").val(self.currectSelectedPatient.AlternatePhoneNo);
+                $("#Email").val(self.currectSelectedPatient.Email);
+                $("#Gender").val(self.currectSelectedPatient.Gender);
+                $("#DOB").val(self.currectSelectedPatient.DOB ? self.currectSelectedPatient.DOB.split('T')[0] : '');  // Date formatting for input[type="date"]
+                $("#Height").val(self.currectSelectedPatient.Height);
+                $("#Weight").val(self.currectSelectedPatient.Weight);
+                $("#BP").val(self.currectSelectedPatient.BP);
+                $("#Sugar").val(self.currectSelectedPatient.Sugar);
+                $("#Temperature").val(self.currectSelectedPatient.Temperature);
+                $("#HealthIssues").val(self.currectSelectedPatient.HealthIssues);
+                $("#DoctorAssignedId").val(self.currectSelectedPatient.DoctorAssignedId);
+                $("#Fee").val(self.currectSelectedPatient.Fee);
+                $("#PreparedBy").val(self.currectSelectedPatient.PreparedBy);
+
+                // Show the sidebar and backdrop
                 $('#sidebar').addClass('show');
                 $('body').append('<div class="modal-backdrop fade show"></div>');
             } else {
+                // If no patient is selected, hide the sidebar and backdrop
                 $('#sidebar').removeClass('show');
                 $('.modal-backdrop').remove();
             }
-
         });
+
         $(document).on("click", "#copyBtn", function () {
-            if (self.currectSelectedTenant) {
+            if (self.currectSelectedPatient) {
                 $('#confirmCopyModal').modal('show');
             }
         });
         $(document).on("click", "#confirmCopyBtn", function () {
-            if (self.currectSelectedTenant) {
-                var tenant = addCommonProperties(self.currectSelectedTenant);
-                tenant.TenantId = null;
+            if (self.currectSelectedPatient) {
+                var tenant = addCommonProperties(self.currectSelectedPatient);
+                tenant.PatientId = null;
                 self.addedittenant(tenant, true);
             }
             $('#confirmCopyModal').modal('hide');
         });
         $(document).on("click", "#deleteBtn", function () {
-            if (self.currectSelectedTenant) {
+            if (self.currectSelectedPatient) {
                 $('#confirmDeleteModal').modal('show');
             }
         });
         $(document).on("click", "#confirmDeleteBtn", function () {
-            if (self.currectSelectedTenant) {
-                //var tenant = addCommonProperties(self.currectSelectedTenant);
-                //tenant.TenantId = null;
+            if (self.currectSelectedPatient) {
+                //var tenant = addCommonProperties(self.currectSelectedPatient);
+                //tenant.PatientId = null;
                 //self.addedittenant(tenant, true);
             }
             $('#confirmDeleteModal').modal('hide');
@@ -331,10 +361,10 @@
             var sortOrder = sorters.length > 0 ? sorters[0].dir : null;
             exportToExcel(data, gridColumns.TenantGrid, "Tenant", "Tenant_Report", sortColumns, sortOrder);
         }
-        self.addedittenant = function (tenant, iscopy) {
+        self.addEditPatient = function (patient, iscopy) {
             makeAjaxRequest({
-                url: API_URLS.InsertTenantAsync,
-                data: tenant,
+                url: "/Patient/InsertOrUpdatePatientRegistration",
+                data: patient,
                 type: 'POST',
                 successCallback: function (response) {
                     if (response) {
@@ -344,7 +374,7 @@
                             $('.modal-backdrop').remove();
                         }
                         table.setData();
-                        self.currectSelectedTenant = {};
+                        self.currectSelectedPatient = {};
                     }
                     console.info(response);
                 },

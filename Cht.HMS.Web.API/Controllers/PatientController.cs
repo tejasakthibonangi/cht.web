@@ -22,7 +22,7 @@ namespace Cht.HMS.Web.API.Controllers
             try
             {
                 // Calling the service method to fetch all patient registrations
-                var response = await _patientManager.GetPatientRegistrationsAsync();
+                var response = await _patientManager.GetPatientInformationsAsync(string.Empty);
 
                 // Returning a successful response with the fetched patient registrations
                 return Ok(response);
@@ -40,7 +40,7 @@ namespace Cht.HMS.Web.API.Controllers
             try
             {
                 // Calling the service method to fetch patient registrations filtered by the input string
-                var response = await _patientManager.GetPatientRegistrationsAsync(inputString);
+                var response = await _patientManager.GetPatientInformationsAsync(inputString);
 
                 // Returning a successful response with the filtered patient registrations
                 return Ok(response);
@@ -52,6 +52,36 @@ namespace Cht.HMS.Web.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetPatientByDoctorAsync/{doctorId}")]
+        public async Task<IActionResult> GetPatientByDoctorAsync(Guid doctorId)
+        {
+            try
+            {
+                var responce = await _patientManager.GetPatientInformationsByDoctorAsync(doctorId);
+
+                return Ok(responce);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        [HttpGet]
+        [Route("GetPatientDetailsAsync/{patientId}")]
+        public async Task<IActionResult> GetPatientDetailsAsync(Guid patientId)
+        {
+            try
+            {
+                var responce = await _patientManager.GetPatientDetailsAsync(patientId);
+
+                return Ok(responce);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
         [HttpPost]
         [Route("InsertOrUpdatePatientRegistrationAsync")]
         public async Task<IActionResult> InsertOrUpdatePatientRegistrationAsync(PatientRegistration registration)

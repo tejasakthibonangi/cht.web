@@ -10,7 +10,7 @@
     actions.push('/Doctor/GetDoctors');
     self.init = function () {
         var table = new Tabulator("#patientGrid", {
-            height: "600px",
+            height: "780px",
             layout: "fitColumns",
             resizableColumnFit: true,
             ajaxURL: '/Patient/GetPatientRegistrations',
@@ -47,32 +47,54 @@
                     }
                 },
                 { title: "Name", field: "PatientName" },
-                { title: "Date of Visit", field: "DateOfVisit", formatter: "datetime", formatterParams: { inputFormat: "iso", outputFormat: "MM/DD/YYYY" } },
-                { title: "Time of Visit", field: "TimeOfVisit", formatter: "datetime", formatterParams: { inputFormat: "iso", outputFormat: "HH:mm" } },
+                { title: "Date of Visit", field: "DateOfVisit"},
+                { title: "Time of Visit", field: "TimeOfVisit"},
                 { title: "Coming From", field: "ComingFrom" },
-                { title: "Reference", field: "Reference" },
                 { title: "Phone Number", field: "PhoneNo" },
-                { title: "Alternate Phone", field: "AlternatePhoneNo" },
-                { title: "Email", field: "Email" },
                 { title: "Gender", field: "Gender" },
-                { title: "Date of Birth", field: "DOB", formatter: "datetime", formatterParams: { inputFormat: "iso", outputFormat: "MM/DD/YYYY" } },
-                { title: "Height", field: "Height" },
-                { title: "Weight", field: "Weight" },
-                { title: "Blood Pressure", field: "BP" },
-                { title: "Sugar", field: "Sugar" },
-                { title: "Temperature", field: "Temperature" },
-                { title: "Health Issues", field: "HealthIssues" },
-                { title: "Doctor Assigned", field: "DoctorAssignedId" },  // You might want to display the doctor's name instead of the ID
-                { title: "Fee", field: "Fee" },
-                { title: "Prepared By", field: "PreparedBy" },
                 {
-                    title: "Options", field: "PatientId", headerSort: false, hozAlign: "center", headerHozAlign: "center", cssClass: "centered-checkbox", width: 30, formatter: function (cell, formatterParams, onRendered) {
+                    title: "Vitals", 
+                    field: "Height", 
+                    formatter: function (cell, formatterParams, onRendered) {
+                        var rowData = cell.getRow().getData();
+
+                        var vitals = [
+                            `Height: ${rowData.Height || "N/A"}`,
+                            `Weight: ${rowData.Weight || "N/A"}`,
+                            `BP: ${rowData.BP || "N/A"}`,
+                            `Sugar: ${rowData.Sugar || "N/A"}`,
+                            `Temperature: ${rowData.Temperature || "N/A"}`
+                        ].join("<br>");
+                        return vitals;
+                    },
+                },
+                { title: "Doctor", field: "DoctorName" }, 
+                { title: "Fee", field: "Fee" },
+                { title: "Current Status", field: "CurrentStatus" },
+                {
+                    title: "Options",
+                    field: "PatientId",
+                    headerSort: false,
+                    hozAlign: "center",
+                    headerHozAlign: "center",
+                    cssClass: "centered-checkbox",
+                    width: 150, // Adjust width as needed
+                    formatter: function (cell, formatterParams, onRendered) {
                         onRendered(function () {
                             var row = cell.getRow();
                             var rowId = row.getData().PatientId;
-                            cell.getElement().innerHTML = `<span target="_blank" data-patientid='${rowId}' class="generatePatientReport"><i class="fa-solid fa-file-pdf"></i></span>`;
+                            cell.getElement().innerHTML = `
+                        <button class="consultation-button btn btn-primary" data-patientid='${rowId}'>
+                            Consultation
+                        </button>`;
                         });
                         return "";
+                    },
+                    cellClick: function (e, cell) {
+                        var patientId = cell.getRow().getData().PatientId;
+                        // Handle the consultation button click event
+                        console.log("Consultation button clicked for Patient ID:", patientId);
+                        // You can add your logic here to handle the consultation action
                     }
                 }
             ],
@@ -185,6 +207,7 @@
             var formData = getFormData('#AddEditPatientRegistrationForm');
             var patient = addCommonProperties(formData);
             patient.PatientId = self.currectSelectedPatient ? self.currectSelectedPatient.PatientId : null;
+            patient.CurrentStatus = self.currectSelectedPatient.CurrentStatus ? self.currectSelectedPatient.CurrentStatus : "Patiend Registered";
             patient.PreparedBy = patient.ModifiedBy;
             self.addEditPatient(patient, false);
 

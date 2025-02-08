@@ -43,7 +43,8 @@ namespace Cht.HMS.Web.UI
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IDoctorService, DoctorService>();
-            
+            services.AddScoped<IMedicineService, MedicineService>();
+            services.AddScoped<ILabTestService, LabTestService>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
