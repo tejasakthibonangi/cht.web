@@ -76,7 +76,6 @@
                         return vitals;
                     },
                 },
-                { title: "Doctor", field: "DoctorName" },
                 { title: "Fee", field: "Fee" },
                 { title: "Current Status", field: "CurrentStatus" },
                 {

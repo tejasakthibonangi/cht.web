@@ -8,7 +8,6 @@
     self.PatientInfirmation = {};
     self.PatientMedicines = [];
     self.PatientLabTests = [];
-
     self.ApplicationUser = {};
     self.init = function () {
         showLoader();
@@ -16,6 +15,13 @@
         var appUserInfo = storageService.get('ApplicationUser');
         if (appUserInfo) {
             self.ApplicationUser = appUserInfo;
+
+
+            if (self.ApplicationUser.RoleName != "Doctor") {
+                $('.card-body').find('input, textarea, select, button').prop('disabled', true);
+                $('#btnBack').prop('disabled', false);
+            }
+
         }
         actions.push('/Patient/GetPatientDetails');
 
@@ -41,7 +47,7 @@
             self.PatientInfirmation = responses && responses[0][0].data ? responses[0][0].data : {};
             self.dbMedicines = responses && responses[1][0].data ? responses[1][0].data : [];
             self.dbLabTests = responses && responses[2][0].data ? responses[2][0].data : [];
-            self.preparePatientInfirmation();
+
             var medicinesList = self.dbMedicines.map(function (medicine) {
                 return {
                     MedicineId: medicine.MedicineId,
@@ -52,7 +58,7 @@
             genarateDropdown("medicineDropdown", medicinesList, "MedicineId", "MedicineName");
 
             genarateDropdown("labTestDropdown", self.dbLabTests, "TestId", "TestName");
-
+            self.preparePatientInfirmation();
             hideLoader();
         }).fail(function () {
             console.log('One or more requests failed.');
@@ -69,6 +75,57 @@
                 $("#temperature").text(self.PatientInfirmation.Temperature);
                 $("#heightWeight").text(self.PatientInfirmation.Height + "/" + self.PatientInfirmation.Weight);
                 $("#healthIssues").text(self.PatientInfirmation.HealthIssues);
+
+                //Consulation Infirmation
+                $("#Diagnosis").val(self.PatientInfirmation.patientCunsultation.Diagnosis);
+                $("#Treatment").val(self.PatientInfirmation.patientCunsultation.patientConsultationDetails.Treatment);
+                $("#Advice").val(self.PatientInfirmation.patientCunsultation.patientConsultationDetails.Advice);
+                $("#Symptoms").val(self.PatientInfirmation.patientCunsultation.Symptoms);
+                $("#FollowUpDate").val(self.PatientInfirmation.patientCunsultation.patientConsultationDetails.FollowUpDate);
+
+                if (self.PatientInfirmation.patientLabOrder) {
+                    if (self.PatientInfirmation.patientLabOrder.patientLabOrderDetails.length > 0) {
+                        self.PatientLabTests = self.PatientInfirmation.patientLabOrder.patientLabOrderDetails.map(function (detail) {
+                            var labTest = self.dbLabTests.find(function (test) {
+                                return test.TestId === detail.TestId;
+                            });
+
+                            return {
+                                TestId: detail.TestId,
+                                TestName: labTest ? labTest.TestName : "Unknown",
+                                Price: detail.PricePerUnit,
+                                Qty: detail.Quantity,
+                                Total: detail.TotalPrice
+                            };
+                        });
+                        console.log(self.PatientLabTests);
+                        self.prepareLabTestsGrid();
+                    }
+                }
+
+                if (self.PatientInfirmation.patientPharmacyOrder) {
+                    if (self.PatientInfirmation.patientPharmacyOrder.patientPharmacyOrderDetails.length > 0) {
+                        self.PatientMedicines = self.PatientInfirmation.patientPharmacyOrder.patientPharmacyOrderDetails.map(function (detail) {
+                            var medicine = self.dbMedicines.find(function (med) {
+                                return med.MedicineId === detail.MedicineId;
+                            });
+
+                            return {
+                                OrderDetailId: detail.OrderDetailId || null,
+                                OrderId: detail.OrderId || null,
+                                MedicineId: detail.MedicineId,
+                                MedicineName: medicine ? medicine.MedicineName : "Unknown",
+                                GenericName: medicine ? medicine.GenericName : "Unknown",
+                                DosageForm: medicine ? medicine.DosageForm : "Unknown",
+                                Manufacturer: medicine ? medicine.Manufacturer : "Unknown",
+                                PricePerUnit: detail.PricePerUnit,
+                                Qty: detail.Quantity,
+                                Total: detail.TotalPrice
+                            };
+                        });
+                        self.prepareMedicinesGrid();
+                    }
+                }
             }
         }
         self.prepareMedicinesGrid = function () {
@@ -178,6 +235,15 @@
             self.prepareLabTestsGrid();
         });
 
+        $(document).on("click", "#btnBack", function (e) {
+            e.preventDefault();
+            if (self.ApplicationUser.RoleName != "Doctor") {
+                window.location.href = "/ExecutiveDashboard/Index";
+            } else {
+                window.location.href = "/DoctorDashboard/Index";
+            }
+
+        });
         self.prepareLabTestsGrid = function () {
             var grid = $("#PatientLabTestsGrid");
             grid.empty();
@@ -197,7 +263,7 @@
             });
         };
 
-        $('#AddEditPatientRegistrationForm').on('submit', function (e) {
+        $('#AddEditDoctorConsutationForm').on('submit', function (e) {
             e.preventDefault();
 
             var diagnosis = $("#Diagnosis").val();
@@ -213,6 +279,7 @@
                 ConsultationDate: self.PatientInfirmation.DateOfVisit,
                 ConsultationTime: self.PatientInfirmation.TimeOfVisit,
                 Symptoms: symptoms,
+                Diagnosis: diagnosis,
                 Remarks: symptoms
             };
 
@@ -231,36 +298,31 @@
 
             medicalConsultation.patientConsultationDetails = consultationDetails;
 
-            //prepare pharmacy data 
+            var patientPharmacyOrder = {};
 
-            // Assuming self.PatientMedicines is already populated
-            var patientPharmacyOrder = new PatientPharmacyOrder();
-
-            // Calculate total quantity and total amount
             var totalQty = 0;
             var totalAmount = 0;
 
             self.PatientMedicines.forEach(function (medicine) {
-                totalQty += medicine.Qty; // Sum up the quantities
-                totalAmount += medicine.Total; // Sum up the total amounts
+                totalQty += medicine.Qty;
+                totalAmount += medicine.Total;
             });
 
-            // Populate the PatientPharmacyOrder object
-            patientPharmacyOrder.OrderId = null; // Set this to the appropriate value if available
-            patientPharmacyOrder.PatientId = self.patientId; // Assuming you have this value
-            patientPharmacyOrder.ConsultationId = self.consultationId; // Assuming you have this value
-            patientPharmacyOrder.OrderDate = new Date(); // Set to current date/time
-            patientPharmacyOrder.ItemsQty = totalQty; // Total quantity of items
-            patientPharmacyOrder.TotalAmount = totalAmount; // Total amount of the order
-            patientPharmacyOrder.CreatedBy = self.ApplicationUser.Id; // Assuming you have this value
-            patientPharmacyOrder.CreatedOn = new Date(); // Set to current date/time
-            patientPharmacyOrder.ModifiedBy = self.ApplicationUser.Id; // Set this if applicable
-            patientPharmacyOrder.ModifiedOn = null; // Set this if applicable
-            patientPharmacyOrder.IsActive = true; // Set to true or based on your logic
+            patientPharmacyOrder.OrderId = null;
+            patientPharmacyOrder.PatientId = self.patientId;
+            patientPharmacyOrder.ConsultationId = self.consultationId;
+            patientPharmacyOrder.OrderDate = new Date();
+            patientPharmacyOrder.ItemsQty = totalQty;
+            patientPharmacyOrder.TotalAmount = totalAmount;
+            patientPharmacyOrder.CreatedBy = self.ApplicationUser.Id;
+            patientPharmacyOrder.CreatedOn = new Date();
+            patientPharmacyOrder.ModifiedBy = self.ApplicationUser.Id;
+            patientPharmacyOrder.ModifiedOn = null;
+            patientPharmacyOrder.IsActive = true;
             patientPharmacyOrder.patientPharmacyOrderDetails = self.PatientMedicines.map(function (medicine) {
                 return {
-                    OrderDetailId: null, // Set this to the appropriate value if available
-                    OrderId: patientPharmacyOrder.OrderId, // Link to the order
+                    OrderDetailId: null,
+                    OrderId: patientPharmacyOrder.OrderId,
                     MedicineId: medicine.MedicineId,
                     MedicineName: medicine.MedicineName,
                     GenericName: medicine.GenericName,
@@ -269,57 +331,71 @@
                     PricePerUnit: medicine.PricePerUnit,
                     Qty: medicine.Qty,
                     Total: medicine.Total,
-                    CreatedBy: self.ApplicationUser.Id, // Assuming you have this value
-                    CreatedOn: new Date(), // Set to current date/time
-                    ModifiedBy: self.ApplicationUser.Id, // Set this if applicable
-                    ModifiedOn: new Date() // Set this if applicable
+                    CreatedBy: self.ApplicationUser.Id,
+                    CreatedOn: new Date(),
+                    ModifiedBy: self.ApplicationUser.Id,
+                    ModifiedOn: new Date(),
+                    IsActive: true
                 };
             });
 
-            // Now create the PatientLabOrder object
-            var patientLabOrder = new PatientLabOrder();
+            var patientLabOrder = {};
 
-            // Calculate total amount and prepare details
             var totalAmount = 0;
 
             self.PatientLabTests.forEach(function (test) {
-                totalAmount += test.Total; // Sum up the total amounts
+                totalAmount += test.Total;
             });
 
-            // Populate the PatientLabOrder object9
-            patientLabOrder.LabOrderId = null; // Set this to the appropriate value if available
-            patientLabOrder.PatientId = self.patientId; // Assuming you have this value
-            patientLabOrder.ConsultationId = self.consultationId; // Assuming you have this value
-            patientLabOrder.OrderDate = new Date(); // Set to current date/time
-            patientLabOrder.TotalAmount = totalAmount; // Total amount of the order
-            patientLabOrder.CreatedBy = self.ApplicationUser.Id; // Assuming you have this value
-            patientLabOrder.CreatedOn = new Date(); // Set to current date/time
-            patientLabOrder.ModifiedBy = self.ApplicationUser.Id; // Set this if applicable
-            patientLabOrder.ModifiedOn = new Date(); // Set this if applicable
-            patientLabOrder.IsActive = true; // Set to true or based on your logic
+            patientLabOrder.LabOrderId = null;
+            patientLabOrder.PatientId = self.patientId;
+            patientLabOrder.ConsultationId = self.consultationId;
+            patientLabOrder.OrderDate = new Date();
+            patientLabOrder.TotalAmount = totalAmount;
+            patientLabOrder.CreatedBy = self.ApplicationUser.Id;
+            patientLabOrder.CreatedOn = new Date();
+            patientLabOrder.ModifiedBy = self.ApplicationUser.Id;
+            patientLabOrder.ModifiedOn = new Date();
+            patientLabOrder.IsActive = true;
             patientLabOrder.patientLabOrderDetails = self.PatientLabTests.map(function (test) {
                 return {
-                    LabOrderDetailId: null, // Set this to the appropriate value if available
-                    LabOrderId: patientLabOrder.LabOrderId, // Link to the order
+                    LabOrderDetailId: null,
+                    LabOrderId: patientLabOrder.LabOrderId,
                     TestId: test.TestId,
                     Quantity: test.Qty,
                     PricePerUnit: test.Price,
                     TotalPrice: test.Total,
-                    CreatedBy: self.ApplicationUser.Id, // Assuming you have this value
-                    CreatedOn: new Date(), // Set to current date/time
-                    ModifiedBy: self.ApplicationUser.Id, // Set this if applicable
-                    ModifiedOn: new Date() // Set this if applicable
+                    CreatedBy: self.ApplicationUser.Id,
+                    CreatedOn: new Date(),
+                    ModifiedBy: self.ApplicationUser.Id,
+                    ModifiedOn: new Date(),
+                    IsActive: true
                 };
             });
 
-            // Now you can use patientLabOrder as needed
             console.log(patientLabOrder);
-            
 
             var _patientInformation = self.PatientInfirmation;
+            _patientInformation.CurrentStatus = "Doctor Consulted";
+            _patientInformation.ModifiedBy = self.ApplicationUser.Id;
+            _patientInformation.ModifiedOn = new Date();
             _patientInformation.patientCunsultation = medicalConsultation;
             _patientInformation.patientPharmacyOrder = patientPharmacyOrder;
             _patientInformation.patientLabOrder = patientLabOrder;
+
+            makeAjaxRequest({
+                url: "/Patient/UpsertPatientConsultationDetails",
+                data: _patientInformation,
+                type: 'POST',
+                successCallback: function (response) {
+                    console.info(response);
+                    hideLoader();
+                    window.location.href = "/DoctorDashboard/Index";
+                },
+                errorCallback: function (xhr, status, error) {
+                    console.error("Error in upserting data to server: " + error);
+                }
+            });
 
             console.log(_patientInformation);
 

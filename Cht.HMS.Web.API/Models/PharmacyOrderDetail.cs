@@ -11,8 +11,8 @@ namespace Cht.HMS.Web.API.Models
         public Guid? OrderId { get; set; }
         public Guid? MedicineId { get; set; }
         public int Quantity { get; set; }
-        public decimal PricePerUnit { get; set; }
-        public decimal TotalPrice { get; set; }
+        public decimal? PricePerUnit { get; set; }
+        public decimal? TotalPrice { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public Guid? ModifiedBy { get; set; }

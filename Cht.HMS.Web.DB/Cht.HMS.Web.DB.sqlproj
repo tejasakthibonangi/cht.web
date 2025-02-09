@@ -93,4 +93,7 @@
     <None Include="Post-Deployment\SeedUpdateDoctorIntoUser.sql" />
     <None Include="Post-Deployment\SeedUpdatePasswordForDoctors.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Backups\ChtDB_0731092025.bacpac" />
+  </ItemGroup>
 </Project>

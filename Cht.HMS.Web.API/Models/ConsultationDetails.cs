@@ -8,10 +8,10 @@ namespace Cht.HMS.Web.API.Models
     {
         [Key]
         public Guid DetailId { get; set; }
-        public Guid ConsultationId { get; set; }
-        public string Diagnosis { get; set; }
-        public string Treatment { get; set; }
-        public string Advice { get; set; }
+        public Guid? ConsultationId { get; set; }
+        public string? Diagnosis { get; set; }
+        public string? Treatment { get; set; }
+        public string? Advice { get; set; }
         public DateTime? FollowUpDate { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTimeOffset? CreatedOn { get; set; }

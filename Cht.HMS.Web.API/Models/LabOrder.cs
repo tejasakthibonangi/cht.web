@@ -10,7 +10,7 @@ namespace Cht.HMS.Web.API.Models
         public Guid LabOrderId { get; set; }
         public Guid? PatientId { get; set; }
         public Guid? ConsultationId { get; set; }
-        public DateTimeOffset OrderDate { get; set; }
+        public DateTimeOffset? OrderDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }

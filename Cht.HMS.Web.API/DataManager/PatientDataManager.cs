@@ -119,7 +119,7 @@ namespace Cht.HMS.Web.API.DataManager
                             OrderId = pharmacyOrder.OrderId,
                             PatientId = pharmacyOrder.PatientId,
                             ConsultationId = pharmacyOrder.ConsultationId,
-                            OrderDate = pharmacyOrder.OrderDate,
+                            OrderDate = pharmacyOrder.OrderDate.Value,
                             ItemsQty = pharmacyOrder.ItemsQty,
                             TotalAmount = pharmacyOrder.TotalAmount,
                             CreatedBy = pharmacyOrder.CreatedBy,
@@ -133,8 +133,8 @@ namespace Cht.HMS.Web.API.DataManager
                                 OrderId = orderDetail.OrderId,
                                 MedicineId = orderDetail.MedicineId,
                                 Quantity = orderDetail.Quantity,
-                                PricePerUnit = orderDetail.PricePerUnit,
-                                TotalPrice = orderDetail.TotalPrice,
+                                PricePerUnit = orderDetail.PricePerUnit.Value,
+                                TotalPrice = orderDetail.TotalPrice.Value,
                                 CreatedBy = orderDetail.CreatedBy,
                                 CreatedOn = orderDetail.CreatedOn,
                                 ModifiedBy = orderDetail.ModifiedBy,
@@ -157,7 +157,7 @@ namespace Cht.HMS.Web.API.DataManager
                             LabOrderId = labOrder.LabOrderId,
                             PatientId = labOrder.PatientId,
                             ConsultationId = labOrder.ConsultationId,
-                            OrderDate = labOrder.OrderDate,
+                            OrderDate = labOrder.OrderDate.Value,
                             TotalAmount = labOrder.TotalAmount,
                             CreatedBy = labOrder.CreatedBy,
                             CreatedOn = labOrder.CreatedOn,
@@ -464,7 +464,7 @@ namespace Cht.HMS.Web.API.DataManager
                         OrderId = patientInformation.patientPharmacyOrder.OrderId.Value,
                         PatientId = patientInformation.patientPharmacyOrder.PatientId,
                         ConsultationId = patientInformation.patientPharmacyOrder.ConsultationId,
-                        OrderDate = patientInformation.patientPharmacyOrder.OrderDate,
+                        OrderDate = DateTimeOffset.Now,
                         ItemsQty = patientInformation.patientPharmacyOrder.ItemsQty,
                         TotalAmount = patientInformation.patientPharmacyOrder.TotalAmount,
                         CreatedBy = patientInformation.patientPharmacyOrder.CreatedBy,
@@ -524,12 +524,13 @@ namespace Cht.HMS.Web.API.DataManager
                     ModifiedOn = patientInformation.ModifiedOn,
                 };
                 await _dbContext.medicalConsultations.AddAsync(patientCunsultation);
+                await _dbContext.SaveChangesAsync();
 
                 var patientCunsultationDetail = new ConsultationDetails()
                 {
                     Advice = patientInformation.patientCunsultation.patientConsultationDetails.Advice,
                     ConsultationId = patientCunsultation.ConsultationId,
-                    DetailId = patientInformation.patientCunsultation.patientConsultationDetails.DetailId.Value,
+                    DetailId = Guid.NewGuid(),
                     FollowUpDate = patientInformation.patientCunsultation.patientConsultationDetails.FollowUpDate,
                     Diagnosis = patientInformation.patientCunsultation.patientConsultationDetails.Diagnosis,
                     Treatment = patientInformation.patientCunsultation.patientConsultationDetails.Treatment,
@@ -540,20 +541,21 @@ namespace Cht.HMS.Web.API.DataManager
                     ModifiedOn = patientInformation.ModifiedOn,
                 };
                 await _dbContext.consultationDetails.AddAsync(patientCunsultationDetail);
-
+                await _dbContext.SaveChangesAsync();
 
                 var pharmacyOrder = new PharmacyOrder()
                 {
                     OrderId = Guid.NewGuid(),
                     ConsultationId = patientCunsultation.ConsultationId,
                     PatientId = patientInformation.PatientId.Value,
+                    OrderDate= patientInformation.patientPharmacyOrder.OrderDate,
                     ItemsQty = patientInformation.patientPharmacyOrder.ItemsQty,
                     TotalAmount = patientInformation.patientPharmacyOrder.TotalAmount,
                     CreatedBy = patientInformation.CreatedBy,
                     CreatedOn = DateTimeOffset.UtcNow,
                     IsActive = true
                 };
-
+                await _dbContext.SaveChangesAsync();
                 await _dbContext.pharmacyOrders.AddAsync(pharmacyOrder);
 
                 var pharmacyOrderDetails = new List<PharmacyOrderDetail>();
@@ -592,6 +594,7 @@ namespace Cht.HMS.Web.API.DataManager
                     ModifiedOn = DateTimeOffset.UtcNow,
                 };
                 await _dbContext.labOrders.AddAsync(labOrder);
+                await _dbContext.SaveChangesAsync();
 
                 var laborderDetail = new List<LabOrderDetail>();
 

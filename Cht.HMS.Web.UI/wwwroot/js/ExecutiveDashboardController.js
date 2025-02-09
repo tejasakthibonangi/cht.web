@@ -253,7 +253,21 @@
                 });
             }
         }
+        $(document).on("click", ".consultation-button", function () {
+            var rowId = $(this).data('patientid');
 
+            var row = $.grep(table.getData(), function (data) {
+                return data.PatientId === rowId;
+            });
+
+            console.log(row[0]);
+
+            var patient = row[0];
+
+            var managerPatientUrl = "/DoctorDashboard/DoctorConsutation?patientId=" + patient.PatientId;
+
+            window.location.href = managerPatientUrl;
+        });
         $(document).on("click", "#editBtn", function () {
             if (self.currectSelectedPatient) {
                 // Populate the form fields with data from the selected patient
@@ -335,7 +349,6 @@
             var sorters = table.getSorters();
             var sortColumns = sorters.length > 0 ? sorters[0].field : null;
             var sortOrder = sorters.length > 0 ? sorters[0].dir : null;
-            exportToExcel(data, gridColumns.TenantGrid, "Tenant", "Tenant_Report", sortColumns, sortOrder);
         }
         self.addEditPatient = function (patient, iscopy) {
             makeAjaxRequest({
