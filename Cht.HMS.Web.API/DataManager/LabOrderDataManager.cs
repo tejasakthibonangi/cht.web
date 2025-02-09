@@ -74,11 +74,6 @@ namespace Cht.HMS.Web.API.DataManager
                 .Where(x => x.PatientId == patientId)
                 .FirstOrDefaultAsync();
 
-            if (labOrder == null)
-            {
-                return null;
-            }
-
             var labOrderDetails = await _dbContext.labOrderDetails
                 .Where(x => x.LabOrderId == labOrder.LabOrderId)
                 .ToListAsync();
