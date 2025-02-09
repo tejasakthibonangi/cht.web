@@ -14,7 +14,7 @@ namespace Cht.HMS.Web.API.Controllers
         {
             _labTestsManager=labTestsManager;
         }
-
+        
         [HttpGet]
         [Route("GetLabTestsAsync")]
         public async Task<IActionResult> GetLabTestsAsync()
@@ -22,6 +22,21 @@ namespace Cht.HMS.Web.API.Controllers
             try
             {
                 var responce = await _labTestsManager.GetLabTestsAsync();
+
+                return Ok(responce);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        [HttpGet]
+        [Route("GetLabOrdersAsync")]
+        public async Task<IActionResult> GetLabOrdersAsync()
+        {
+            try
+            {
+                var responce = await _labTestsManager.GetLabOrdersAsync();
 
                 return Ok(responce);
             }

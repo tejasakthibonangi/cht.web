@@ -1,4 +1,5 @@
 ﻿using Cht.HMS.Web.API.Models;
+using Cht.HMS.Web.Utility;
 
 namespace Cht.HMS.Web.API.Manager
 {
@@ -7,5 +8,6 @@ namespace Cht.HMS.Web.API.Manager
         Task<Pharmacy> InsertOrUpdatePharmacyAsync(Pharmacy pharmacy);
         Task<Pharmacy> GetPharmacyByIdAsync(Guid PharmacyId);
         Task<List<Pharmacy>> GetPharmacysAsync();
+        Task<List<PharmacyOrderInfirmation>> GetPatientPharmacyOrderAsync();
     }
 }

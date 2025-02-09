@@ -84,7 +84,7 @@
         public Guid? OrderId { get; set; }
         public Guid? PatientId { get; set; }
         public Guid? ConsultationId { get; set; }
-        public DateTimeOffset OrderDate { get; set; }
+        public DateTimeOffset? OrderDate { get; set; }
         public int ItemsQty { get; set; }
         public decimal? TotalAmount { get; set; }
         public Guid? CreatedBy { get; set; }
