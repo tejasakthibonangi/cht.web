@@ -29,5 +29,20 @@ namespace Cht.HMS.Web.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [HttpGet]
+        [Route("GetPharmacyOrdersAsync")]
+        public async Task<IActionResult> GetPharmacyOrdersAsync()
+        {
+            try
+            {
+                var responce = await _pharmacyManager.GetPatientPharmacyOrderAsync();
+
+                return Ok(responce);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace Cht.HMS.Web.UI
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IMedicineService, MedicineService>();
             services.AddScoped<ILabTestService, LabTestService>();
+            services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -120,3 +121,4 @@ namespace Cht.HMS.Web.UI
         }
     }
 }
+ 

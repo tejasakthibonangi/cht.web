@@ -1,6 +1,7 @@
 ﻿using Cht.HMS.Web.UI.Factory;
 using Cht.HMS.Web.UI.Interfaces;
 using Cht.HMS.Web.UI.Models;
+using Cht.HMS.Web.Utility;
 
 namespace Cht.HMS.Web.UI.Services
 {
@@ -11,6 +12,11 @@ namespace Cht.HMS.Web.UI.Services
         public LabTestService(IRepositoryFactory repository)
         {
             _repository = repository;
+        }
+
+        public async Task<List<LabOrderInfirmation>> GetLabOrdersAsync()
+        {
+            return await _repository.SendAsync<List<LabOrderInfirmation>>(HttpMethod.Get, "LabTest/GetLabOrdersAsync");
         }
 
         public async Task<LabTest> GetLabTestByIdAsync(Guid testId)
